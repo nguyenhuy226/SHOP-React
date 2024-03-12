@@ -1,9 +1,10 @@
 import React from "react";
-import { Outlet, Navigate } from "react-router-dom";
-import { useAuth } from "../AuthContext";
+import { Outlet, Navigate, useLocation } from "react-router-dom";
+import { store } from "@/stories";
 
-export default function AuthRouter({ redirect = "/" }) {
-  const { user } = useAuth();
-  if (user) return <Navigate to={redirect} />;
+export default function GuestRouter({ redirect = "/" }) {
+  const user = store.user;
+  const { state } = useLocation();
+  if (user) return <Navigate to={state?.rediect || redirect} />;
   return <Outlet />;
 }

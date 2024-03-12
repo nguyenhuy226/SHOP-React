@@ -15,8 +15,8 @@ export const useForm = (rules, initialValues = {}) => {
     return {
       error: errors[name],
       value: values[name] || "",
-      onChange: (ev) => {
-        let _values = { ...values, [name]: ev.target.value };
+      onChange: (value) => {
+        let _values = { ...values, [name]: value };
         if (rules[name]) {
           const error = validate(
             {
@@ -27,7 +27,7 @@ export const useForm = (rules, initialValues = {}) => {
           setError((prev) => ({ ...prev, [name]: error[name] || "" }));
         }
 
-        setValues((prev) => ({ ...prev, [name]: ev.target.value }));
+        setValues((prev) => ({ ...prev, [name]: value }));
       },
     };
   };
