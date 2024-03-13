@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { localStorageCache, sessionStorageCache } from "../utils/cache";
 import { CanceledError } from "axios";
+import { delay } from "@/utils/delay";
 
 const _cache = {
   localStorage: localStorageCache,
@@ -16,6 +17,7 @@ export const useQuery = ({
   enable = true,
   storeDriver = "localStorage",
   dependencyList = [],
+  limitDuration,
   keepPrevousData = false,
 }) => {
   const dataRef = useRef({});
@@ -68,14 +70,16 @@ export const useQuery = ({
       cache.set(cacheName, data, expired);
     }
   };
-
   const fetchData = async () => {
     controllerRef.current.abort();
     controllerRef.current = new AbortController();
+    const startTime = Date.now();
+    let res;
+    let error;
     try {
       setLoading(true);
       setStatus("pending");
-      let res = getCacheDataOrPrivousData();
+      res = getCacheDataOrPrivousData();
       if (!res) {
         res = await queryFn({ signal: controllerRef.current.signal });
         if (cacheName) {
@@ -86,21 +90,31 @@ export const useQuery = ({
       if (res instanceof Promise) {
         res = await res;
       }
-
+    } catch (err) {
+      console.log(err);
+      error = err;
+    }
+    const endTime = Date.now();
+    if (limitDuration) {
+      let timeout = endTime - startTime;
+      if (timeout < limitDuration) {
+        await delay(limitDuration - timeout);
+      }
+    }
+    if (res) {
       setStatus("success");
       setData(res);
       setCacheDataOrPrivousData(res);
       fetchRef.current = false;
       setLoading(false);
-    } catch (error) {
-      console.log(error);
-      if (error instanceof CanceledError) {
-      } else {
-        setError(error);
-        setStatus("error");
-        setLoading(false);
-        throw error;
-      }
+      return res;
+    }
+    if (error instanceof CanceledError) {
+    } else {
+      setError(error);
+      setStatus("err");
+      setLoading(false);
+      throw error;
     }
   };
   return {

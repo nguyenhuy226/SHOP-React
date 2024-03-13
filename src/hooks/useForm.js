@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { validate } from "../utils/validate";
 
-export const useForm = (rules, initialValues = {}) => {
+export const useForm = (rules, { initialValues = {}, dependencies = {} }) => {
   const [values, setValues] = useState(initialValues);
   const [errors, setError] = useState({});
 
@@ -17,16 +17,26 @@ export const useForm = (rules, initialValues = {}) => {
       value: values[name] || "",
       onChange: (value) => {
         let _values = { ...values, [name]: value };
+        const _errorObj = {};
         if (rules[name]) {
-          const error = validate(
+          _errorObj[name] = validate(
             {
               [name]: rules[name],
             },
             _values
-          );
-          setError((prev) => ({ ...prev, [name]: error[name] || "" }));
+          )[name];
         }
-
+        if (dependencies[name]) {
+          for (let dependency of dependencies[name]) {
+            _errorObj[dependency] = validate(
+              {
+                [dependency]: rules[dependency],
+              },
+              _values
+            )[dependency];
+          }
+        }
+        setError((prev) => ({ ...prev, ..._errorObj }));
         setValues((prev) => ({ ...prev, [name]: value }));
       },
     };

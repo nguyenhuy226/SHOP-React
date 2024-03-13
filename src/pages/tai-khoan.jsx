@@ -5,27 +5,44 @@ import { useForm } from "@/hooks/useForm";
 import { useQuery } from "@/hooks/useQuery";
 import { userService } from "@/services/user";
 import { confirm, handleError, regexp, required } from "@/utils";
+import { message } from "antd";
 
 export default function Account() {
   useBodyClass("bg-light");
+
+  const formRegister = useForm(
+    {
+      name: [required()],
+      username: [required(), regexp("email")],
+      password: [required()],
+      confirmPassword: [confirm("password")],
+    },
+    {
+      dependencies: {
+        password: ["confirmPassword"],
+      },
+    }
+  );
+
   const { loading, reFetch: registerService } = useQuery({
     enable: false,
-    queryFn: () => {
-      userService.register(formRegister.values);
+    queryFn: async () => {
+      const res = await userService.register({
+        ...formRegister.values,
+        redirect: window.location.origin + window.location.pathname,
+      });
+      return res;
     },
+    limitDuration: 1000,
   });
-
-  const formRegister = useForm({
-    name: [required()],
-    username: [required(), regexp("email")],
-    password: [required()],
-    confirmPassword: [confirm("password")],
-  });
-
   const onRegister = async () => {
     if (formRegister.validate()) {
       try {
-        await registerService();
+        const res = await registerService();
+        message.success(
+          res?.message ||
+            "Tạo tài khoản thành công, vui lòng kiểm tra email để kích hoạt"
+        );
       } catch (error) {
         handleError(error);
       }
