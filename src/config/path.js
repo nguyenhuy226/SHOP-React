@@ -8,9 +8,9 @@ export const PATH = {
   Profile: {
     Index: PROFILE,
     Oder: PROFILE + "/don-hang",
-    Wishlist: PROFILE + "san-pham-yeu-thich",
-    Address: PROFILE + "so-dia-chi",
-    Payment: PROFILE + "so-thanh-toan",
+    Wishlist: PROFILE + "/san-pham-yeu-thich",
+    Address: PROFILE + "/so-dia-chi",
+    Payment: PROFILE + "/so-thanh-toan",
   },
   Account: "/tai-khoan",
 };

@@ -1,15 +1,24 @@
 import { Button } from "@/components/Button";
 import Field from "@/components/Field";
+import { useAuth } from "@/hooks/useAuth";
 import { useBodyClass } from "@/hooks/useBodyClass";
 import { useForm } from "@/hooks/useForm";
 import { useQuery } from "@/hooks/useQuery";
+import { authService } from "@/services/auth";
 import { userService } from "@/services/user";
+import { loginAction } from "@/stories/auth";
 import { confirm, handleError, regexp, required } from "@/utils";
 import { message } from "antd";
+import { useDispatch } from "react-redux";
 
 export default function Account() {
   useBodyClass("bg-light");
-
+  const dispatch = useDispatch();
+  const { loginLoading } = useAuth();
+  const formLogin = useForm({
+    username: [required(), regexp("email")],
+    password: [required()],
+  });
   const formRegister = useForm(
     {
       name: [required()],
@@ -48,6 +57,17 @@ export default function Account() {
       }
     }
   };
+  const onLogin = async () => {
+    if (formLogin.validate()) {
+      try {
+        await dispatch(loginAction(formLogin.values)).unwrap();
+        message.success("đăng nhập thành công!");
+      } catch (error) {
+        handleError(error);
+      }
+    }
+  };
+
   return (
     <section className="py-12">
       <div className="container">
@@ -59,15 +79,22 @@ export default function Account() {
                 {/* Heading */}
                 <h6 className="mb-7">Returning Customer</h6>
                 {/* Form */}
-                <form>
+                <div>
                   <div className="row">
                     <div className="col-12">
                       {/* Email */}
-                      <Field placeholder="Email Address *" />
+                      <Field
+                        placeholder="Email Address *"
+                        {...formLogin.register("username")}
+                      />
                     </div>
                     <div className="col-12">
                       {/* Password */}
-                      <Field placeholder="Password *" type="password" />
+                      <Field
+                        placeholder="Password *"
+                        type="password"
+                        {...formLogin.register("password")}
+                      />
                     </div>
                     <div className="col-12 col-md">
                       {/* Remember */}
@@ -101,13 +128,15 @@ export default function Account() {
                     </div>
                     <div className="col-12">
                       {/* Button */}
-                      <a
+                      <Button
+                        onClick={onLogin}
+                        loading={loginLoading}
                         href="./account-personal-info.html"
                         className="btn btn-sm btn-dark"
                         type="submit"
                       >
                         Sign In
-                      </a>
+                      </Button>
                     </div>
                     <div className="col-12">
                       <p className="font-size-sm text-muted mt-5 mb-2 font-light">
@@ -132,7 +161,7 @@ export default function Account() {
                       </p>
                     </div>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>

@@ -27,8 +27,8 @@ export const routes = [
       },
       {
         element: <PrivateRouter redirect={PATH.Account} />,
-        children: profile,
         path: PATH.Profile.Index,
+        children: profile,
       },
       {
         element: <ProductDetailPage />,

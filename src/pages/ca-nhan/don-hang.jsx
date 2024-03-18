@@ -1,6 +1,13 @@
-import React from "react";
+import { logoutAction } from "@/stories/auth";
+import { useDispatch } from "react-redux";
 
 export default function Order() {
+  const dispatch = useDispatch();
+  const _logout = (e) => {
+    console.log(12);
+    e.preventDefault();
+    dispatch(logoutAction());
+  };
   return (
     <section className="pt-7 pb-12">
       <div className="container">
@@ -46,6 +53,11 @@ export default function Order() {
                   Sổ thanh toán
                 </a>
                 <a
+                  onClick={(e) => {
+                    console.log(12);
+                    e.preventDefault();
+                    dispatch(logoutAction());
+                  }}
                   className="list-group-item list-group-item-action dropright-toggle"
                   href="#!"
                 >
