@@ -70,7 +70,7 @@ export const useQuery = ({
       cache.set(cacheName, data, expired);
     }
   };
-  const fetchData = async () => {
+  const fetchData = async (...args) => {
     controllerRef.current.abort();
     controllerRef.current = new AbortController();
     const startTime = Date.now();
@@ -81,7 +81,10 @@ export const useQuery = ({
       setStatus("pending");
       res = getCacheDataOrPrivousData();
       if (!res) {
-        res = await queryFn({ signal: controllerRef.current.signal });
+        res = await queryFn({
+          signal: controllerRef.current.signal,
+          params: args,
+        });
         if (cacheName) {
           _asyncFunction[cacheName] = res;
         }

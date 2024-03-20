@@ -1,6 +1,6 @@
 import { ENV } from "@/config";
 import { configureStore } from "@reduxjs/toolkit";
-import { authReducer } from "./auth";
+import { authReducer, getUserAction } from "./auth";
 
 export const store = configureStore({
   reducer: {
@@ -9,3 +9,4 @@ export const store = configureStore({
   devTools: ENV === "development",
   // middleware: []
 });
+store.dispatch(getUserAction());

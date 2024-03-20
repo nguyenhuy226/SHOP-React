@@ -1,6 +1,14 @@
 import { authService } from "@/services/auth";
 import { userService } from "@/services/user";
-import { clearToken, clearUser, getUser, setToken, setUser } from "@/utils";
+import {
+  clearToken,
+  clearUser,
+  getToken,
+  getUser,
+  handleError,
+  setToken,
+  setUser,
+} from "@/utils";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -39,6 +47,36 @@ export const loginByCodeAction = createAsyncThunk(
     }
   }
 );
+
+export const logoutAction = createAsyncThunk("auth/logout", (_, thunkApi) => {
+  // thunkApi.dispatch(authActions.logout());
+  clearUser();
+  clearToken();
+});
+
+export const setUserAction = createAsyncThunk(
+  "auth/setUser",
+  (user, thunkApi) => {
+    setUser(user);
+    return user;
+    // thunkApi.dispatch(authActions.setUser(user));
+  }
+);
+
+export const getUserAction = createAsyncThunk(
+  "auth/getUser",
+  async (_, thunkApi) => {
+    try {
+      if (getToken()) {
+        const user = await userService.getUser();
+        return user.data;
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  }
+);
+
 export const { reducer: authReducer, action: authActions } = createSlice({
   initialState,
   name: "auth",
@@ -68,11 +106,12 @@ export const { reducer: authReducer, action: authActions } = createSlice({
     builder.addCase(loginByCodeAction.fulfilled, (state, action) => {
       state.user = action.payload;
     });
+    builder.addCase(setUserAction.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
+    builder.addCase(getUserAction.fulfilled, (state, action) => {
+      state.user = action.payload;
+      console.log(action.payload);
+    });
   },
-});
-
-export const logoutAction = createAsyncThunk("auth/logout", (_, thunkApi) => {
-  // thunkApi.dispatch(authActions.logout());
-  clearUser();
-  clearToken();
 });

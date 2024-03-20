@@ -8,4 +8,7 @@ export const authService = {
   login(data) {
     return http.post(`${AUTHEN_API}/login`, data);
   },
+  refreshToken(data) {
+    return http.post(`${AUTHEN_API}/refresh-token`, data);
+  },
 };

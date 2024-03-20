@@ -9,9 +9,8 @@ export default function Field({ label, error, onChange, ...props }) {
   };
   return (
     <FieldStyle className={cn("form-group relative", { error })}>
-      <label className="sr-only" htmlFor={id}>
-        {label}
-      </label>
+      {label && <label htmlFor={id}>{label}</label>}
+
       <input
         {...props}
         onChange={_onChange}

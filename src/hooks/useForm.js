@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { validate } from "../utils/validate";
 
 export const useForm = (
@@ -7,6 +7,9 @@ export const useForm = (
 ) => {
   const [values, setValues] = useState(initialValues);
   const [errors, setError] = useState({});
+  useEffect(() => {
+    setValues(initialValues);
+  }, [JSON.stringify(initialValues)]);
 
   const _validate = () => {
     const errorObject = validate(rules, values);
@@ -53,5 +56,6 @@ export const useForm = (
     errors,
     register,
     validate: _validate,
+    setValues,
   };
 };

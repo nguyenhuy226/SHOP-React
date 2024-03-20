@@ -5,7 +5,6 @@ import { useBodyClass } from "@/hooks/useBodyClass";
 import { useForm } from "@/hooks/useForm";
 import { useQuery } from "@/hooks/useQuery";
 import { useSearch } from "@/hooks/useSearch";
-import { authService } from "@/services/auth";
 import { userService } from "@/services/user";
 import { loginAction, loginByCodeAction } from "@/stories/auth";
 import {
