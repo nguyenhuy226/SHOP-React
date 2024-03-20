@@ -23,19 +23,29 @@ export const loginAction = createAsyncThunk(
     }
   }
 );
-export const logoutAction = createAsyncThunk("auth/logout", (_, thunkApi) => {
-  thunkApi.dispatch(authActions.logout());
-  clearUser();
-  clearToken();
-});
 
+export const loginByCodeAction = createAsyncThunk(
+  "auth/loginByCode",
+  async (code, thunkApi) => {
+    try {
+      const res = await authService.loginByCode({ code });
+      setToken(res.data);
+      const user = await userService.getUser();
+      setUser(user.data);
+      return user.data;
+    } catch (error) {
+      console.log(error);
+      throw error.response.data;
+    }
+  }
+);
 export const { reducer: authReducer, action: authActions } = createSlice({
   initialState,
   name: "auth",
   reducers: {
-    logout: (state) => {
-      state.user = null;
-    },
+    // logout: (state) => {
+    //   state.user = null;
+    // },
     setUser: (state, action) => {
       state.user = action.payload;
     },
@@ -51,5 +61,18 @@ export const { reducer: authReducer, action: authActions } = createSlice({
     builder.addCase(loginAction.rejected, (state) => {
       state.loginLoading = false;
     });
+    builder.addCase(logoutAction.fulfilled, (state) => {
+      state.user = null;
+    });
+
+    builder.addCase(loginByCodeAction.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
   },
+});
+
+export const logoutAction = createAsyncThunk("auth/logout", (_, thunkApi) => {
+  // thunkApi.dispatch(authActions.logout());
+  clearUser();
+  clearToken();
 });

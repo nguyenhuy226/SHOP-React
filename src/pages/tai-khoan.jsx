@@ -4,15 +4,24 @@ import { useAuth } from "@/hooks/useAuth";
 import { useBodyClass } from "@/hooks/useBodyClass";
 import { useForm } from "@/hooks/useForm";
 import { useQuery } from "@/hooks/useQuery";
+import { useSearch } from "@/hooks/useSearch";
 import { authService } from "@/services/auth";
 import { userService } from "@/services/user";
-import { loginAction } from "@/stories/auth";
-import { confirm, handleError, regexp, required } from "@/utils";
+import { loginAction, loginByCodeAction } from "@/stories/auth";
+import {
+  confirm,
+  coppyToClipboard,
+  handleError,
+  regexp,
+  required,
+} from "@/utils";
 import { message } from "antd";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 export default function Account() {
   useBodyClass("bg-light");
+  const [search] = useSearch();
   const dispatch = useDispatch();
   const { loginLoading } = useAuth();
   const formLogin = useForm({
@@ -32,7 +41,11 @@ export default function Account() {
       },
     }
   );
-
+  useEffect(() => {
+    if (search.code) {
+      dispatch(loginByCodeAction(search.code));
+    }
+  }, []);
   const { loading, reFetch: registerService } = useQuery({
     enable: false,
     queryFn: async () => {
@@ -67,7 +80,10 @@ export default function Account() {
       }
     }
   };
-
+  const _coppyToClipboard = (ev) => {
+    coppyToClipboard(ev.target.innerText);
+    message.info("coppy to clipboard");
+  };
   return (
     <section className="py-12">
       <div className="container">
@@ -142,7 +158,19 @@ export default function Account() {
                       <p className="font-size-sm text-muted mt-5 mb-2 font-light">
                         Tài khoản demo:{" "}
                         <b className="text-black">
-                          demo@spacedev.com / Spacedev@123
+                          <span
+                            className="cursor-pointer underline"
+                            onClick={_coppyToClipboard}
+                          >
+                            demo@spacedev.com
+                          </span>{" "}
+                          /{" "}
+                          <span
+                            className="cursor-pointer underline"
+                            onClick={_coppyToClipboard}
+                          >
+                            Spacedev@123
+                          </span>
                         </b>
                       </p>
                       <p className="font-size-sm text-muted mt-5 mb-2 font-light text-justify">

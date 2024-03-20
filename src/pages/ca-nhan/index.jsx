@@ -1,6 +1,10 @@
-import React from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { logoutAction } from "@/stories/auth";
+import { useDispatch } from "react-redux";
 
 export default function ProfilePage() {
+  const dispatch = useDispatch();
+  const { user } = useAuth();
   return (
     <section className="pt-7 pb-12">
       <div className="container">
@@ -48,6 +52,10 @@ export default function ProfilePage() {
                 <a
                   className="list-group-item list-group-item-action dropright-toggle"
                   href="#!"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    dispatch(logoutAction());
+                  }}
                 >
                   Đăng xuất
                 </a>

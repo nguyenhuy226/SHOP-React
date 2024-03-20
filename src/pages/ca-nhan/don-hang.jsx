@@ -1,13 +1,4 @@
-import { logoutAction } from "@/stories/auth";
-import { useDispatch } from "react-redux";
-
 export default function Order() {
-  const dispatch = useDispatch();
-  const _logout = (e) => {
-    console.log(12);
-    e.preventDefault();
-    dispatch(logoutAction());
-  };
   return (
     <section className="pt-7 pb-12">
       <div className="container">
@@ -24,13 +15,13 @@ export default function Order() {
               <div className="list-group list-group-sm list-group-strong list-group-flush-x">
                 <a
                   className="list-group-item list-group-item-action dropright-toggle "
-                  href="account-orders.html"
+                  href="#"
                 >
                   Theo dõi đơn hàng
                 </a>
                 <a
                   className="list-group-item list-group-item-action dropright-toggle "
-                  href="account-personal-info.html"
+                  href="#"
                 >
                   Thông tin cá nhân
                 </a>
@@ -53,11 +44,6 @@ export default function Order() {
                   Sổ thanh toán
                 </a>
                 <a
-                  onClick={(e) => {
-                    console.log(12);
-                    e.preventDefault();
-                    dispatch(logoutAction());
-                  }}
                   className="list-group-item list-group-item-action dropright-toggle"
                   href="#!"
                 >
