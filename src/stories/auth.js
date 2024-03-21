@@ -111,7 +111,6 @@ export const { reducer: authReducer, action: authActions } = createSlice({
     });
     builder.addCase(getUserAction.fulfilled, (state, action) => {
       state.user = action.payload;
-      console.log(action.payload);
     });
   },
 });

@@ -1,8 +1,11 @@
 import { Button } from "@/components/Button";
 import Field from "@/components/Field";
+import { UploadFile } from "@/components/UploadFile";
+import { avatarDefault } from "@/config/assets";
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "@/hooks/useForm";
 import { useQuery } from "@/hooks/useQuery";
+import { fileService } from "@/services/file";
 import { userService } from "@/services/user";
 import { logoutAction, setUserAction } from "@/stories/auth";
 import {
@@ -13,9 +16,12 @@ import {
   required,
   validate,
 } from "@/utils";
-import { useDispatch } from "react-redux";
-import { message } from "antd";
 import { object } from "@/utils/object";
+import { message, DatePicker } from "antd";
+import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import dayjs from "dayjs";
+import { Radio } from "@/components/Radio";
 
 const rule = {
   name: [required()],
@@ -52,11 +58,12 @@ const rule = {
   confirmPassword: [confirm("newPassword")],
 };
 export default function ProfilePage() {
+  const fileRef = useRef();
   const dispatch = useDispatch();
   const { user } = useAuth();
 
   const userForm = useForm(rule, { initialValues: user });
-
+  console.log(userForm.values);
   const { loadingL: changePasswordLoading, reFetch: changePasswordService } =
     useQuery({
       enable: false,
@@ -68,16 +75,31 @@ export default function ProfilePage() {
     queryFn: ({ params }) => userService.updateProfile(...params),
   });
   const onSubmit = async () => {
-    const checkOldData = object.isEqual(user, userForm.values, "name", "phone");
-    if (!userForm.values.newPassword && checkOldData) {
+    let avatar;
+    if (fileRef.current) {
+      const res = await fileService.uploadFile(fileRef.current);
+      if (res.link) {
+        avatar = res.link;
+      }
+    }
+    const checkOldData = object.isEqual(
+      user,
+      userForm.values,
+      "name",
+      "phone",
+      "birthday",
+      "gender"
+    );
+    if (!avatar && !userForm.values.newPassword && checkOldData) {
       message.warning("Vui lòng nhập thông tin để thay đổi");
     }
 
     if (userForm.validate()) {
-      if (!checkOldData) {
-        updateProfileService(userForm.values)
+      if (avatar || !checkOldData) {
+        updateProfileService({ ...userForm.values, avatar })
           .then((res) => {
             dispatch(setUserAction(res.data));
+            fileRef.current = null;
             message.success("cập nhật thông tin tài khoản thành công");
           })
           .catch(handleError);
@@ -161,17 +183,23 @@ export default function ProfilePage() {
           </div>
           <div className="col-12 col-md-9 col-lg-8 offset-lg-1">
             {/* Form */}
-            <form>
+            <div>
               <div className="row">
                 <div className="col-12">
-                  <div className="profile-avatar">
-                    <div className="wrap">
-                      <img src="./img/avt.png" />
-                      <i className="icon">
-                        <img src="./img/icons/icon-camera.svg" />
-                      </i>
-                    </div>
-                  </div>
+                  <UploadFile onChange={(file) => (fileRef.current = file)}>
+                    {(previewSrc, trigger) => (
+                      <div className="profile-avatar">
+                        <div className="wrap" onClick={trigger}>
+                          <img
+                            src={previewSrc || user.avatar || avatarDefault}
+                          />
+                          <i className="icon">
+                            <img src="./img/icons/icon-camera.svg" />
+                          </i>
+                        </div>
+                      </div>
+                    )}
+                  </UploadFile>
                 </div>
                 <div className="col-12">
                   {/* Email */}
@@ -227,29 +255,37 @@ export default function ProfilePage() {
                   />
                 </div>
                 <div className="col-12 col-lg-6">
-                  <div className="form-group">
-                    <label>Date of Birth</label>
-                    <input
-                      className="form-control form-control-sm"
-                      type="date"
-                      placeholder="dd/mm/yyyy"
-                      required
-                    />
-                  </div>
+                  <Field
+                    label="Date of Birth"
+                    renderField={(props) => (
+                      <DatePicker
+                        className="form-control form-control-sm"
+                        onChange={(ev, date) => props.onChange(date)}
+                        value={props.value ? dayjs(props.value) : undefined}
+                        format="DD/MM/YYYY"
+                      />
+                    )}
+                    {...userForm.register("birthday")}
+                  />
                 </div>
                 <div className="col-12 col-lg-6">
                   {/* Gender */}
-                  <div className="form-group mb-8">
-                    <label>Gender</label>
-                    <div className="btn-group-toggle" data-toggle="buttons">
-                      <label className="btn btn-sm btn-outline-border active">
-                        <input type="radio" name="gender" defaultChecked /> Male
-                      </label>
-                      <label className="btn btn-sm btn-outline-border">
-                        <input type="radio" name="gender" /> Female
-                      </label>
-                    </div>
-                  </div>
+
+                  <Field
+                    label="Gender"
+                    {...userForm.register("gender")}
+                    renderField={(props) => (
+                      <div className="btn-group-toggle">
+                        <Radio.Group
+                          defaultValue={props.value}
+                          onChange={(value) => props?.onChange?.(value)}
+                        >
+                          <Radio.Toggle value="male">Male</Radio.Toggle>
+                          <Radio.Toggle value="female">Female</Radio.Toggle>
+                        </Radio.Group>
+                      </div>
+                    )}
+                  />
                 </div>
                 <div className="col-12">
                   {/* Button */}
@@ -258,7 +294,7 @@ export default function ProfilePage() {
                   </Button>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
