@@ -19,6 +19,7 @@ export const useQuery = ({
   dependencyList = [],
   limitDuration,
   keepPrevousData = false,
+  deleteAsyncFuncion = false,
 }) => {
   const dataRef = useRef({});
   const cache = _cache[storeDriver];
@@ -47,8 +48,8 @@ export const useQuery = ({
 
   const getCacheDataOrPrivousData = () => {
     if (cacheName) {
-      if (keepPrevousData && dataRef[cacheName]) {
-        return dataRef[cacheName];
+      if (keepPrevousData && dataRef.current[cacheName]) {
+        return dataRef.current[cacheName];
       }
       if (_asyncFunction[cacheName]) {
         return _asyncFunction[cacheName];
@@ -60,7 +61,7 @@ export const useQuery = ({
 
   const setCacheDataOrPrivousData = (data) => {
     if (keepPrevousData) {
-      dataRef[cacheName] = data;
+      dataRef.current[cacheName] = data;
     }
     if (cacheName && cacheTime) {
       let expired = cacheTime;
@@ -85,7 +86,7 @@ export const useQuery = ({
           signal: controllerRef.current.signal,
           params: args,
         });
-        if (cacheName) {
+        if (cacheName && !deleteAsyncFuncion) {
           _asyncFunction[cacheName] = res;
         }
       }
@@ -104,6 +105,8 @@ export const useQuery = ({
         await delay(limitDuration - timeout);
       }
     }
+    // if (cacheName) delete _asyncFunction[cacheName];
+
     if (res) {
       setStatus("success");
       setData(res);
@@ -120,11 +123,15 @@ export const useQuery = ({
       throw error;
     }
   };
+  const clearPreviousData = () => {
+    dataRef.current = {};
+  };
   return {
     data,
     loading,
     error,
     status,
     reFetch: fetchData,
+    clearPreviousData,
   };
 };

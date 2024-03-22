@@ -586,7 +586,9 @@ export default function ProductPage() {
                 ? Array.from(Array(15)).map((_, i) => (
                     <ProductCardLoading key={i} />
                   ))
-                : data?.data?.map((e) => <ProductCard key={e.id} {...e} />)}
+                : data?.data?.map((e) => (
+                    <ProductCard showWishlist key={e.id} {...e} />
+                  ))}
             </div>
             {/* Pagination */}
             <Paginate totalPage={data?.paginate?.totalPage} />

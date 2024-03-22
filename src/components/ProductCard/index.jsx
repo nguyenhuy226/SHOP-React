@@ -1,7 +1,13 @@
 import React from "react";
 import Skeleton from "../Skeleton";
 import { useCategory } from "@/hooks/useCategories";
-import { currency } from "@/utils";
+import { currency, handleError } from "@/utils";
+import { productService } from "@/services/product";
+import { message } from "antd";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "@/config";
+import { useAuth } from "@/hooks/useAuth";
+import { Popconfirm } from "../Popcomfirm";
 
 export default function ProductCard({
   images,
@@ -13,10 +19,53 @@ export default function ProductCard({
   rating_average,
   review_count,
   categories,
+  id,
+  showWishlist,
+  showRemove,
+  onRemoveWishlistSuccess,
 }) {
   const img1 = images?.[0].thumbnail_url;
   const img2 = images?.[1] ? images?.[1]?.thumbnail_url : img1;
   const category = useCategory(categories);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const onAddWishlist = async () => {
+    const key = `add-wishlist-${id}`;
+    try {
+      message.loading({
+        key,
+        content: `Đang thêm sản phẩm ${name} vào yêu thích`,
+        duration: 0,
+      });
+      await productService.addWishlist(id);
+      message.success({
+        key,
+        content: `thêm sản phẩm ${name} vào yêu thích thành công`,
+      });
+    } catch (error) {
+      handleError(error, key);
+    }
+  };
+  const onRemoveWishlist = async () => {
+    const key = `remove-wishlist-${id}`;
+    try {
+      message.loading({
+        key,
+        content: `Đang xóa sản phẩm ${name} khỏi yêu thích`,
+        duration: 0,
+      });
+      await productService.removeWishlist(id);
+      message.success({
+        key,
+        content: `Xóa sản phẩm ${name} khỏi yêu thích thành công`,
+      });
+      onRemoveWishlistSuccess?.();
+    } catch (error) {
+      handleError(error, key);
+    }
+  };
+
   return (
     <div className="col-6 col-md-4">
       {/* Card */}
@@ -45,14 +94,37 @@ export default function ProductCard({
                 <i className="fe fe-shopping-cart" />
               </button>
             </span>
-            <span className="card-action">
-              <button
-                className="btn btn-xs btn-circle btn-white-primary"
-                data-toggle="button"
+            {showWishlist && (
+              <Popconfirm
+                disabled={!!user}
+                title="Thông báo"
+                description="Vui lòng đăng nhập trước khi đưa sản phẩm vào yêu thích"
+                onConfirm={() => navigate(PATH.Account)}
+                okText="Đăng nhập"
+                showCancel={false}
               >
-                <i className="fe fe-heart" />
-              </button>
-            </span>
+                <span className="card-action">
+                  <button
+                    onClick={user ? onAddWishlist : undefined}
+                    className="btn btn-xs btn-circle btn-white-primary"
+                    data-toggle="button"
+                  >
+                    <i className="fe fe-heart" />
+                  </button>
+                </span>
+              </Popconfirm>
+            )}
+            {showRemove && (
+              <span className="card-action">
+                <button
+                  onClick={onRemoveWishlist}
+                  className="btn btn-xs btn-circle btn-white-primary"
+                  data-toggle="button"
+                >
+                  <i className="fe fe-x" />
+                </button>
+              </span>
+            )}
           </div>
         </div>
         {/* Body */}
@@ -186,25 +258,6 @@ export const ProductCardLoading = () => {
             <Skeleton height={300} />
           </a>
           {/* Actions */}
-          <div className="card-actions">
-            <span className="card-action"></span>
-            <span className="card-action">
-              <button
-                className="btn btn-xs btn-circle btn-white-primary"
-                data-toggle="button"
-              >
-                <i className="fe fe-shopping-cart" />
-              </button>
-            </span>
-            <span className="card-action">
-              <button
-                className="btn btn-xs btn-circle btn-white-primary"
-                data-toggle="button"
-              >
-                <i className="fe fe-heart" />
-              </button>
-            </span>
-          </div>
         </div>
         {/* Body */}
         <div className="card-body px-0">
