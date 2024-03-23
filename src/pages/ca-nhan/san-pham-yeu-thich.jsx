@@ -21,10 +21,12 @@ export default function WishlistPage() {
     reFetch: fetchWishlist,
     clearPreviousData,
   } = useQuery({
-    // deleteAsyncFuncion: true,
+    deleteAsyncFuncion: true,
+    keepPrevousData: true,
     queryKey: [qs],
     queryFn: () => productService.getWishlist(`?${qs}`),
   });
+
   return (
     <>
       <div>
@@ -38,7 +40,7 @@ export default function WishlistPage() {
                 <ProductCard
                   showRemove
                   onRemoveWishlistSuccess={() => {
-                    // clearPreviousData();
+                    clearPreviousData();
                     fetchWishlist();
                   }}
                   key={e.id}

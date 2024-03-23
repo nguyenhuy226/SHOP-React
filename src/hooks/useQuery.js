@@ -133,5 +133,7 @@ export const useQuery = ({
     status,
     reFetch: fetchData,
     clearPreviousData,
+    dataRef,
+    _asyncFunction,
   };
 };
