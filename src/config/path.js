@@ -10,6 +10,8 @@ export const PATH = {
     Oder: PROFILE + "/don-hang",
     Wishlist: PROFILE + "/san-pham-yeu-thich",
     Address: PROFILE + "/so-dia-chi",
+    EditAddress: PROFILE + "/so-dia-chi/edit/:id",
+    NewAddress: PROFILE + "/so-dia-chi/new",
     Payment: PROFILE + "/so-thanh-toan",
   },
   Account: "/tai-khoan",

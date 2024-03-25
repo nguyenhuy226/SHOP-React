@@ -39,13 +39,13 @@ export default function ProfileLayout() {
                 </NavLink>
                 <NavLink
                   className="list-group-item list-group-item-action dropright-toggle "
-                  to="account-address.html"
+                  to={PATH.Profile.Address}
                 >
                   Sổ địa chỉ
                 </NavLink>
                 <NavLink
                   className="list-group-item list-group-item-action dropright-toggle "
-                  to="account-payment.html"
+                  to="account-orders.html"
                 >
                   Sổ thanh toán
                 </NavLink>
