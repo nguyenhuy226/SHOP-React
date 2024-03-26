@@ -12,6 +12,8 @@ export const PATH = {
     Address: PROFILE + "/so-dia-chi",
     EditAddress: PROFILE + "/so-dia-chi/edit/:id",
     NewAddress: PROFILE + "/so-dia-chi/new",
+    NewPayment: PROFILE + "/so-thanh-toan/new",
+    EditPayment: PROFILE + "/so-thanh-toan/edit/:id",
     Payment: PROFILE + "/so-thanh-toan",
   },
   Account: "/tai-khoan",

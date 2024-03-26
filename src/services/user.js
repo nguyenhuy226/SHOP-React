@@ -23,8 +23,8 @@ export const userService = {
   addAddress(data) {
     return http.post(`${USER_API}/address`, data);
   },
-  editAddress(data) {
-    return http.patch(`${USER_API}/address`, data);
+  editAddress(id, data) {
+    return http.patch(`${USER_API}/address/${id}`, data);
   },
   removeAddress(id) {
     return http.delete(`${USER_API}/address/${id}`);

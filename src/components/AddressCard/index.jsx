@@ -2,8 +2,16 @@ import React from "react";
 import Skeleton from "../Skeleton";
 import { withLoading } from "@/utils/withLoading";
 import { withListLoading } from "@/utils/withListLoading";
+import { Button } from "../Button";
+import { AddressCardStyle } from "./style";
+import { handleError } from "@/utils";
+import { userService } from "@/services/user";
+import { message } from "antd";
+import { Link, generatePath } from "react-router-dom";
+import { PATH } from "@/config";
 
 function AddressCard({
+  _id,
   fullName,
   email,
   phone,
@@ -11,9 +19,45 @@ function AddressCard({
   district,
   address,
   default: addressDefault,
+  onGetAddressDefault,
 }) {
+  const onChangeAddressDefault = async () => {
+    try {
+      const key = "change-address-default";
+      message.loading({
+        key,
+        content: "Thao tác đang được thực hiện",
+      });
+      await userService.editAddress(_id, { default: true });
+      onGetAddressDefault?.();
+      message.success({
+        key,
+        content: "Thay đổi địa chỉ mặc định thành công",
+      });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const _onDeleteAddress = async () => {
+    try {
+      const key = "delete-address";
+      message.loading({
+        key,
+        content: "Đang xóa địa chỉ",
+      });
+      await userService.removeAddress(_id);
+      onGetAddressDefault?.();
+      message.success({
+        key,
+        content: "Xóa địa chỉ thành công",
+      });
+    } catch (error) {
+      handleError(error);
+    }
+  };
   return (
-    <div className="col-12">
+    <AddressCardStyle className="col-12">
       {/* Card */}
       <div className="card card-lg bg-light mb-8">
         <div className="card-body">
@@ -32,23 +76,32 @@ function AddressCard({
             <b>Địa chỉ:</b> {address}
           </p>
           <div className="card-action-right-bottom">
-            {addressDefault && (
+            {addressDefault ? (
               <div className="color-success cursor-pointer">
                 Địa chỉ mặc định
               </div>
+            ) : (
+              <Button
+                onClick={onChangeAddressDefault}
+                outline
+                className="hidden btn-change-default btn-xs"
+              >
+                Đặt làm địa chỉ mặc định
+              </Button>
             )}
           </div>
           {/* Action */}
           <div className="card-action card-action-right flex gap-2">
             {/* Button */}
-            <button
+            <Link
               className="btn btn-xs btn-circle btn-white-primary"
-              href="account-address-edit.html"
+              to={generatePath(PATH.Profile.EditAddress, { id: _id })}
             >
               <i className="fe fe-edit-2" />
-            </button>
+            </Link>
             {!addressDefault && (
               <button
+                onClick={_onDeleteAddress}
                 className="btn btn-xs btn-circle btn-white-primary"
                 href="account-address-edit.html"
               >
@@ -58,7 +111,7 @@ function AddressCard({
           </div>
         </div>
       </div>
-    </div>
+    </AddressCardStyle>
   );
 }
 const AddressCardLoading = () => {

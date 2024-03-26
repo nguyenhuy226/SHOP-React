@@ -15,6 +15,8 @@ export const useQuery = ({
   queryKey,
   cacheTime,
   enable = true,
+  onSuccess,
+  onError,
   storeDriver = "localStorage",
   dependencyList = [],
   limitDuration,
@@ -82,7 +84,7 @@ export const useQuery = ({
       setStatus("pending");
       res = getCacheDataOrPrivousData();
       if (!res) {
-        res = await queryFn({
+        res = queryFn({
           signal: controllerRef.current.signal,
           params: args,
         });
@@ -107,8 +109,9 @@ export const useQuery = ({
     }
     // if (cacheName) delete _asyncFunction[cacheName];
 
-    if (res) {
+    if (res && !(res instanceof Promise)) {
       setStatus("success");
+      onSuccess?.(res);
       setData(res);
       setCacheDataOrPrivousData(res);
       fetchRef.current = false;
@@ -117,6 +120,7 @@ export const useQuery = ({
     }
     if (error instanceof CanceledError) {
     } else {
+      onError(error);
       setError(error);
       setStatus("err");
       setLoading(false);

@@ -45,7 +45,7 @@ export default function ProfileLayout() {
                 </NavLink>
                 <NavLink
                   className="list-group-item list-group-item-action dropright-toggle "
-                  to="account-orders.html"
+                  to={PATH.Profile.Payment}
                 >
                   Sổ thanh toán
                 </NavLink>

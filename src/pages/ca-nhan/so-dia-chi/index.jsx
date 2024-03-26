@@ -7,8 +7,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Address() {
-  const { loading, data } = useQuery({
+  const { loading, data, reFetch } = useQuery({
     queryFn: () => userService.getAddress(),
+    onSuccess: (res) => {
+      res.data.sort((e) => (e.default ? -1 : 0));
+    },
   });
 
   return (
@@ -18,7 +21,11 @@ export default function Address() {
         ? Array.from(Array(3)).map((_, i) => <AddressCard key={i} loading />)
         : data?.data?.map((e) => <AddressCard key={e._id} {...e} />)} */}
 
-      <ListAddressCard data={data?.data} loading={loading} />
+      <ListAddressCard
+        data={data?.data}
+        loading={!data?.data && loading}
+        onGetAddressDefault={reFetch}
+      />
       <div className="col-12">
         {/* Button */}
         <Link
