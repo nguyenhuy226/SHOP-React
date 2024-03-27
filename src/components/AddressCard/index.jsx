@@ -35,7 +35,7 @@ function AddressCard({
         content: "Thay đổi địa chỉ mặc định thành công",
       });
     } catch (error) {
-      handleError(error);
+      handleError(error, key);
     }
   };
 

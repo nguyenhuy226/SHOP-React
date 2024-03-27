@@ -1,182 +1,233 @@
+import { Button } from "@/components/Button";
+import Field from "@/components/Field";
+import Input from "@/components/Input";
 import { Portal } from "@/components/Portal";
-import { PROFILE_TITLE_ID } from "@/config";
-import React, { useState } from "react";
+import { Radio } from "@/components/Radio";
+import Select from "@/components/Select";
+import { PATH, PROFILE_TITLE_ID } from "@/config";
+import { useForm } from "@/hooks/useForm";
+import { useQuery } from "@/hooks/useQuery";
+import { userService } from "@/services/user";
+import { handleError, required } from "@/utils";
+import moment from "moment";
+import { useRef, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { message, Spin } from "antd";
+
+const rules = {
+  cardName: [required()],
+  cardNumber: [required()],
+  cvv: [required()],
+  month: [required()],
+  year: [required()],
+};
 
 export default function ActionPayment() {
-  const [step, setStep] = useState(0);
+  const { id } = useParams();
+  const [step, setStep] = useState(id ? 1 : 0);
+  const typeRef = useRef("card");
+  const form = useForm(rules);
+  const navigate = useNavigate();
+
+  const { data: paymentDetail, loading: getPaymentLoading } = useQuery({
+    enable: !!id,
+    queryFn: () => userService.getPaymentDetail(id),
+    onSuccess: (res) => {
+      const t = res.data.expired?.split("/");
+      const month = t[0];
+      const year = t[1];
+      form.setValues({ ...res.data, month, year });
+    },
+    onError: () => {
+      message.error("Sổ địa chỉ không tồn tại");
+      navigate(PATH.Profile.Payment);
+    },
+  });
+
+  const { loading, reFetch: actionService } = useQuery({
+    enable: false,
+    queryFn: ({ params }) => {
+      if (id) {
+        return userService.editPayment(id, ...params);
+      } else {
+        return userService.addPayment(...params);
+      }
+    },
+  });
+
+  const onSubmit = async () => {
+    try {
+      if (form.validate()) {
+        await actionService({
+          ...form.values,
+          type: typeRef.current,
+          expired: `${form.values.month}/${form.values.year}`,
+        });
+        message.success(
+          id
+            ? "Cập nhật sổ thanh toán thành công"
+            : "Thêm sổ thanh toán thành công"
+        );
+        navigate(PATH.Profile.Payment);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   return (
     <div>
-      <Portal selector={PROFILE_TITLE_ID}>Add Debit / Credit Card</Portal>
+      <Portal selector={PROFILE_TITLE_ID}>
+        {id ? "Edit Debit / Credit Card" : "Add Debit / Credit Card"}
+      </Portal>
       {step === 0 && (
-        <form>
+        <div>
           {/* Card */}
-          <div className="form-group card card-sm border">
-            <div className="card-body">
-              {/* Radio */}
-              <div className="custom-control custom-radio">
-                {/* Input */}
-                <input
-                  className="custom-control-input collapsed"
-                  id="checkoutPaymentCard"
-                  name="payment"
-                  type="radio"
-                  defaultChecked
-                />
-                {/* Label */}
-                <label
-                  className="custom-control-label d-flex justify-content-between font-size-sm text-body text-nowrap"
-                  htmlFor="checkoutPaymentCard"
-                >
+          <Radio.Group
+            defaultValue="card"
+            onChange={(value) => (typeRef.current = value)}
+          >
+            <div className="form-group card card-sm border">
+              <div className="card-body">
+                {/* Radio */}
+                <Radio value="card">
                   I want to add Debit / Credit Card{" "}
                   <img
                     className="ml-2"
                     src="/img/brands/color/cards.svg"
                     alt="..."
                   />
-                </label>
+                </Radio>
               </div>
             </div>
-          </div>
-          {/* Card */}
-          <div className="form-group card card-sm border">
-            <div className="card-body">
-              {/* Radio */}
-              <div className="custom-control custom-radio">
-                {/* Input */}
-                <input
-                  className="custom-control-input"
-                  id="checkoutPaymentPaypal"
-                  name="payment"
-                  type="radio"
-                />
-                {/* Label */}
-                <label
-                  className="custom-control-label d-flex justify-content-between font-size-sm text-body text-nowrap"
-                  htmlFor="checkoutPaymentPaypal"
-                >
+            {/* Card */}
+            <div className="form-group card card-sm border">
+              <div className="card-body">
+                {/* Radio */}
+                <Radio value="paypall">
                   I want to add PayPall{" "}
                   <img src="/img/brands/color/paypal.svg" alt="..." />
-                </label>
+                </Radio>
               </div>
             </div>
-          </div>
+          </Radio.Group>
           {/* Button */}
-          <button className="btn btn-dark" type="submit">
+          <button className="btn btn-dark" onClick={() => setStep(1)}>
             Continue <i className="fe fe-arrow-right ml-2" />
           </button>
-        </form>
+        </div>
       )}
 
       {step === 1 && (
-        <form>
-          <div className="row">
-            <div className="col-12 col-md-6">
-              <div className="form-group">
-                <label htmlFor="cardNumber">Card Number *</label>
-                <input
-                  className="form-control"
-                  id="cardNumber"
-                  type="text"
-                  placeholder="Card Number"
-                  required
+        <Spin spinning={getPaymentLoading}>
+          <div>
+            <div className="row">
+              <div className="col-12 col-md-6">
+                <Field
+                  label="Card Number *"
+                  placeholder="Card Number *"
+                  {...form.register("cardNumber")}
+                />
+              </div>
+              <div className="col-12 col-md-6">
+                <Field
+                  label="Name on Card *"
+                  placeholder="Name on Card *"
+                  {...form.register("cardName")}
+                />
+              </div>
+              <div className="col-12">
+                {/* Label */}
+                <label>Expiry Date *</label>
+              </div>
+              <div className="col-12 col-md-4">
+                <Field
+                  {...form.register("month")}
+                  renderField={(props) => (
+                    <Select {...props}>
+                      <option>Month *</option>
+                      {Array.from(Array(12)).map((_, i) => (
+                        <option key={i} value={i + 1}>
+                          {moment(`${i + 1}/01/2000`).format("MMMM")}
+                        </option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </div>
+              <div className="col-12 col-md-4">
+                <Field
+                  {...form.register("year")}
+                  renderField={(props) => (
+                    <Select {...props}>
+                      {" "}
+                      <option>Year *</option>
+                      {Array.from(Array(30)).map((_, i) => {
+                        const value = new Date().getFullYear() - 15 + i;
+                        return (
+                          <option value={value} key={value}>
+                            {value}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  )}
+                />
+              </div>
+              <div className="col-12 col-md-4">
+                <Field
+                  placeholder="CVV"
+                  {...form.register("cvv")}
+                  renderField={(props) => (
+                    <Input
+                      {...props}
+                      helper="The CVV Number on your credit card or debit card is a 3 digit number on VISA, MasterCard and Discover branded credit and debit cards."
+                    />
+                  )}
+                />
+              </div>
+              <div className="col-12">
+                <Field
+                  {...form.register("default")}
+                  renderField={(props) => (
+                    <div className="custom-control custom-checkbox mb-0">
+                      <input
+                        onChange={(ev) => {
+                          if (paymentDetail && paymentDetail.data.default) {
+                            message.warning(
+                              "Bạn không được bỏ thanh toán mặc định"
+                            );
+                          } else {
+                            props?.onChange?.(ev.target.checked);
+                          }
+                        }}
+                        checked={props.value}
+                        type="checkbox"
+                        className="custom-control-input"
+                        id="defaultPaymentMethod"
+                      />
+                      <label
+                        className="custom-control-label"
+                        htmlFor="defaultPaymentMethod"
+                      >
+                        Default payment method
+                      </label>
+                    </div>
+                  )}
                 />
               </div>
             </div>
-            <div className="col-12 col-md-6">
-              <div className="form-group">
-                <label htmlFor="nameOnCard">Name on Card *</label>
-                <input
-                  className="form-control"
-                  id="nameOnCard"
-                  type="text"
-                  placeholder="Name on Card"
-                  required
-                />
-              </div>
-            </div>
-            <div className="col-12">
-              {/* Label */}
-              <label>Expiry Date *</label>
-            </div>
-            <div className="col-12 col-md-4">
-              <div className="form-group">
-                <label className="sr-only" htmlFor="paymentMonth">
-                  Month
-                </label>
-                <select className="custom-select" id="paymentMonth" required>
-                  <option selected disabled value>
-                    Month *
-                  </option>
-                  <option>January</option>
-                  <option>February</option>
-                  <option>March</option>
-                </select>
-              </div>
-            </div>
-            <div className="col-12 col-md-4">
-              <div className="form-group">
-                <label className="sr-only" htmlFor="paymentCardYear">
-                  Year
-                </label>
-                <select className="custom-select" id="paymentCardYear" required>
-                  <option selected disabled value>
-                    Year *
-                  </option>
-                  <option>2017</option>
-                  <option>2018</option>
-                  <option>2019</option>
-                </select>
-              </div>
-            </div>
-            <div className="col-12 col-md-4">
-              <div className="form-group">
-                <div className="input-group input-group-merge">
-                  <input
-                    className="form-control"
-                    id="paymentCardCVV"
-                    type="text"
-                    placeholder="CVV *"
-                    required
-                  />
-                  <div className="input-group-append">
-                    <span
-                      className="input-group-text"
-                      data-toggle="popover"
-                      data-placement="top"
-                      data-trigger="hover"
-                      data-content="The CVV Number on your credit card or debit card is a 3 digit number on VISA, MasterCard and Discover branded credit and debit cards."
-                      data-original-title
-                      title
-                    >
-                      <i className="fe fe-help-circle" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-12">
-              <div className="form-group">
-                <div className="custom-control custom-checkbox mb-3">
-                  <input
-                    type="checkbox"
-                    className="custom-control-input"
-                    id="defaultPaymentMethod"
-                  />
-                  <label
-                    className="custom-control-label"
-                    htmlFor="defaultPaymentMethod"
-                  >
-                    Default payment method
-                  </label>
-                </div>
-              </div>
-            </div>
+            {/* Button */}
+            <Button
+              onClick={onSubmit}
+              className="btn btn-dark"
+              type="submit"
+              loading={loading}
+            >
+              {id ? "Edit Card" : "Add Card"}
+            </Button>
           </div>
-          {/* Button */}
-          <button className="btn btn-dark" type="submit">
-            Add Card
-          </button>
-        </form>
+        </Spin>
       )}
     </div>
   );
