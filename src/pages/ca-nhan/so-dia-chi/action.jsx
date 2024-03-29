@@ -6,6 +6,7 @@ import { useForm } from "@/hooks/useForm";
 import { useQuery } from "@/hooks/useQuery";
 import { userService } from "@/services/user";
 import { handleError, regexp, required } from "@/utils";
+import { object } from "@/utils/object";
 import { message, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -60,6 +61,11 @@ export default function AddressAction() {
   const onEdit = async () => {
     try {
       if (form.validate()) {
+        if (id && object.isEqual(form.values, addressDetail.data)) {
+          message.warning("Vui lòng thay đổi thông tin trước khi bấm cập nhật");
+          return;
+        }
+
         await editAddressService(form.values);
         message.success("Sửa địa chỉ thành công");
         navigate(PATH.Profile.Address);

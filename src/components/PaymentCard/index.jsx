@@ -9,6 +9,7 @@ import { Button } from "../Button";
 import { handleError } from "@/utils";
 import { userService } from "@/services/user";
 import { message } from "antd";
+import { useAction } from "@/hooks/useAction";
 
 export default function PaymentCard({
   type,
@@ -23,40 +24,54 @@ export default function PaymentCard({
   const month = t[0];
   const year = t[1];
 
-  const _onChangeAddressDefault = async () => {
-    try {
-      const key = "change-payment-default";
-      message.loading({
-        key,
-        content: "Thao tác đang được thực hiện",
-      });
-      await userService.editPayment(_id, { default: true });
-      onChangePaymentDefault?.();
-      message.success({
-        key,
-        content: "Thay đổi sổ thanh toán mặc định thành công",
-      });
-    } catch (error) {
-      handleError(error);
-    }
-  };
-  const _onDeletePayment = async () => {
-    try {
-      const key = "delete-payment";
-      message.loading({
-        key,
-        content: "Đang xóa sổ thanh toán",
-      });
-      await userService.removePayment(_id);
-      onChangePaymentDefault?.();
-      message.success({
-        key,
-        content: "Xóa sổ thanh toán  thành công",
-      });
-    } catch (error) {
-      handleError(error, key);
-    }
-  };
+  const _onChangeAddressDefault = useAction({
+    service: () => userService.editPayment(_id, { default: true }),
+    loadingMessage: "Thao tác đang được thực hiện",
+    successMessage: "Thay đổi sổ thanh toán mặc định thành công",
+    onSuccess: onChangePaymentDefault,
+  });
+  // const _onChangeAddressDefault = async () => {
+  //   try {
+  //     const key = "change-payment-default";
+  //     message.loading({
+  //       key,
+  //       content: "Thao tác đang được thực hiện",
+  //     });
+  //     await userService.editPayment(_id, { default: true });
+  //     onChangePaymentDefault?.();
+  //     message.success({
+  //       key,
+  //       content: "Thay đổi sổ thanh toán mặc định thành công",
+  //     });
+  //   } catch (error) {
+  //     handleError(error);
+  //   }
+  // };
+
+  const _onDeletePayment = useAction({
+    service: () => userService.removePayment(_id),
+    loadingMessage: "Đang xóa sổ thanh toán",
+    successMessage: "Xóa sổ thanh toán  thành công",
+    onSuccess: onChangePaymentDefault,
+    reTry: false,
+  });
+  // const _onDeletePayment = async () => {
+  //   try {
+  //     const key = "delete-payment";
+  //     message.loading({
+  //       key,
+  //       content: "Đang xóa sổ thanh toán",
+  //     });
+  //     await userService.removePayment(_id);
+  //     onChangePaymentDefault?.();
+  //     message.success({
+  //       key,
+  //       content: "Xóa sổ thanh toán  thành công",
+  //     });
+  //   } catch (error) {
+  //     handleError(error, key);
+  //   }
+  // };
   return (
     <PaymentCardStyle className="col-12">
       {/* Card */}

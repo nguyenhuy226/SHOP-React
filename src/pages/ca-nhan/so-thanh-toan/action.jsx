@@ -13,6 +13,7 @@ import moment from "moment";
 import { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { message, Spin } from "antd";
+import { object } from "@/utils/object";
 
 const rules = {
   cardName: [required()],
@@ -58,6 +59,10 @@ export default function ActionPayment() {
   const onSubmit = async () => {
     try {
       if (form.validate()) {
+        if (id && object.isEqual(form.values, paymentDetail.data)) {
+          message.warning("Vui lòng thay đổi thông tin trước khi bấm cập nhật");
+          return;
+        }
         await actionService({
           ...form.values,
           type: typeRef.current,

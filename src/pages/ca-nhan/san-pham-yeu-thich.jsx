@@ -1,6 +1,6 @@
 import Paginate from "@/components/Paginate";
 import { Portal } from "@/components/Portal";
-import ProductCard, { ProductCardLoading } from "@/components/ProductCard";
+import { ListProductCard } from "@/components/ProductCard";
 import { PROFILE_TITLE_ID } from "@/config";
 import { useQuery } from "@/hooks/useQuery";
 import { useSearch } from "@/hooks/useSearch";
@@ -32,7 +32,17 @@ export default function WishlistPage() {
       <div>
         <Portal selector={PROFILE_TITLE_ID}>Sản phẩm yêu thích</Portal>
         <div className="row">
-          {loading
+          <ListProductCard
+            loadingCount={15}
+            loading={loading}
+            data={data?.data}
+            showRemove
+            onRemoveWishlistSuccess={() => {
+              clearPreviousData();
+              fetchWishlist();
+            }}
+          />
+          {/* {loading
             ? Array.from(Array(15)).map((_, i) => (
                 <ProductCardLoading key={i} />
               ))
@@ -46,7 +56,7 @@ export default function WishlistPage() {
                   key={e.id}
                   {...e}
                 />
-              ))}
+              ))} */}
         </div>
         {/* Pagination */}
         <Paginate totalPage={data?.paginate?.totalPage} />

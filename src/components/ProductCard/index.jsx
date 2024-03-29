@@ -1,13 +1,16 @@
-import React from "react";
-import Skeleton from "../Skeleton";
-import { useCategory } from "@/hooks/useCategories";
-import { currency, handleError } from "@/utils";
-import { productService } from "@/services/product";
-import { message } from "antd";
-import { useNavigate } from "react-router-dom";
 import { PATH } from "@/config";
 import { useAuth } from "@/hooks/useAuth";
+import { useCategory } from "@/hooks/useCategories";
+import { productService } from "@/services/product";
+import { currency, handleError } from "@/utils";
+import { withListLoading } from "@/utils/withListLoading";
+import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 import { Popconfirm } from "../Popcomfirm";
+import Skeleton from "../Skeleton";
+import { useRef } from "react";
+import { useAction } from "@/hooks/useAction";
+import { Rating } from "../Rating";
 
 export default function ProductCard({
   images,
@@ -30,41 +33,60 @@ export default function ProductCard({
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const onAddWishlist = async () => {
-    const key = `add-wishlist-${id}`;
-    try {
-      message.loading({
-        key,
-        content: `Đang thêm sản phẩm ${name} vào yêu thích`,
-        duration: 0,
-      });
-      await productService.addWishlist(id);
-      message.success({
-        key,
-        content: `thêm sản phẩm ${name} vào yêu thích thành công`,
-      });
-    } catch (error) {
-      handleError(error, key);
-    }
-  };
-  const onRemoveWishlist = async () => {
-    const key = `remove-wishlist-${id}`;
-    try {
-      message.loading({
-        key,
-        content: `Đang xóa sản phẩm ${name} khỏi yêu thích`,
-        duration: 0,
-      });
-      await productService.removeWishlist(id);
-      message.success({
-        key,
-        content: `Xóa sản phẩm ${name} khỏi yêu thích thành công`,
-      });
-      onRemoveWishlistSuccess?.();
-    } catch (error) {
-      handleError(error, key);
-    }
-  };
+  // const flagWishlistRef = useRef(false);
+
+  // const onAddWishlist = async () => {
+  //   if (flagWishlistRef.current) return;
+  //   flagWishlistRef.current = true;
+  //   const key = `add-wishlist-${id}`;
+  //   try {
+  //     message.loading({
+  //       key,
+  //       content: `Đang thêm sản phẩm ${name} vào yêu thích`,
+  //       duration: 0,
+  //     });
+  //     await productService.addWishlist(id);
+  //     message.success({
+  //       key,
+  //       content: `thêm sản phẩm ${name} vào yêu thích thành công`,
+  //     });
+  //   } catch (error) {
+  //     handleError(error, key);
+  //   }
+  //   flagWishlistRef.current = false;
+  // };
+
+  const onAddWishlist = useAction({
+    service: () => productService.addWishlist(id),
+    loadingMessage: `Đang thêm sản phẩm ${name} vào yêu thích`,
+    successMessage: `thêm sản phẩm ${name} vào yêu thích thành công`,
+  });
+
+  const onRemoveWishlist = useAction({
+    service: () => productService.removeWishlist(id),
+    loadingMessage: `Đang xóa sản phẩm ${name} khỏi yêu thích`,
+    successMessage: `Xóa sản phẩm ${name} khỏi yêu thích thành công`,
+    onSuccess: onRemoveWishlistSuccess,
+  });
+
+  // const onRemoveWishlist = async () => {
+  //   const key = `remove-wishlist-${id}`;
+  //   try {
+  //     message.loading({
+  //       key,
+  //       content: `Đang xóa sản phẩm ${name} khỏi yêu thích`,
+  //       duration: 0,
+  //     });
+  //     await productService.removeWishlist(id);
+  //     message.success({
+  //       key,
+  //       content: `Xóa sản phẩm ${name} khỏi yêu thích thành công`,
+  //     });
+  //     onRemoveWishlistSuccess?.();
+  //   } catch (error) {
+  //     handleError(error, key);
+  //   }
+  // };
 
   return (
     <div className="col-6 col-md-4">
@@ -147,77 +169,7 @@ export default function ProductCard({
             {review_count > 0 && (
               <>
                 {rating_average}
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 24 24"
-                  size={14}
-                  color="#fdd836"
-                  height={14}
-                  width={14}
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ color: "rgb(253, 216, 54)" }}
-                >
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                </svg>
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 24 24"
-                  size={14}
-                  color="#fdd836"
-                  height={14}
-                  width={14}
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ color: "rgb(253, 216, 54)" }}
-                >
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                </svg>
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 24 24"
-                  size={14}
-                  color="#fdd836"
-                  height={14}
-                  width={14}
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ color: "rgb(253, 216, 54)" }}
-                >
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                </svg>
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 24 24"
-                  size={14}
-                  color="#fdd836"
-                  height={14}
-                  width={14}
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ color: "rgb(253, 216, 54)" }}
-                >
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                </svg>
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 24 24"
-                  size={14}
-                  color="#fdd836"
-                  height={14}
-                  width={14}
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ color: "rgb(253, 216, 54)" }}
-                >
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                </svg>
-                ({review_count} review)
+                <Rating value={rating_average} />({review_count} review)
               </>
             )}
           </div>
@@ -286,3 +238,5 @@ export const ProductCardLoading = () => {
     </div>
   );
 };
+
+export const ListProductCard = withListLoading(ProductCard, ProductCardLoading);
