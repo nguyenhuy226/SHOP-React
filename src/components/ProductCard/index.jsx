@@ -1,17 +1,17 @@
 import { PATH } from "@/config";
+import { useAction } from "@/hooks/useAction";
 import { useAuth } from "@/hooks/useAuth";
 import { useCategory } from "@/hooks/useCategories";
 import { productService } from "@/services/product";
-import { currency, handleError } from "@/utils";
+import { updateCartItemAction } from "@/stories/cart";
+import { currency } from "@/utils";
 import { withListLoading } from "@/utils/withListLoading";
-import { message } from "antd";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Popconfirm } from "../Popcomfirm";
-import Skeleton from "../Skeleton";
-import { useRef } from "react";
-import { useAction } from "@/hooks/useAction";
 import { Rating } from "../Rating";
-
+import Skeleton from "../Skeleton";
+import { useCart } from "@/hooks/useCart";
 export default function ProductCard({
   images,
   name,
@@ -32,7 +32,8 @@ export default function ProductCard({
   const category = useCategory(categories);
   const navigate = useNavigate();
   const { user } = useAuth();
-
+  const dispatch = useDispatch();
+  const { cart } = useCart();
   // const flagWishlistRef = useRef(false);
 
   // const onAddWishlist = async () => {
@@ -87,7 +88,21 @@ export default function ProductCard({
   //     handleError(error, key);
   //   }
   // };
-
+  const onAddCartItem = () => {
+    if (user) {
+      const { listItems } = cart;
+      const product = listItems.find((e) => e.productId === id);
+      dispatch(
+        updateCartItemAction({
+          productId: id,
+          quantity: product ? product.quantity + 1 : 1,
+          showPopover: true,
+        })
+      );
+    } else {
+      navigate(PATH.Account);
+    }
+  };
   return (
     <div className="col-6 col-md-4">
       {/* Card */}
@@ -110,6 +125,7 @@ export default function ProductCard({
             <span className="card-action"></span>
             <span className="card-action">
               <button
+                onClick={onAddCartItem}
                 className="btn btn-xs btn-circle btn-white-primary"
                 data-toggle="button"
               >

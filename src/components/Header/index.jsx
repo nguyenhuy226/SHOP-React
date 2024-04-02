@@ -2,21 +2,32 @@ import { PATH } from "@/config";
 import { avatarDefault } from "@/config/assets";
 import { useAuth } from "@/hooks/useAuth";
 import { logoutAction } from "@/stories/auth";
-import { Dropdown } from "antd";
+import { Dropdown, Popover } from "antd";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import SearchDrawer from "../SearchDrawer";
+import { useCart } from "@/hooks/useCart";
+import { CartDrawer } from "../CartDrawer";
+import { CheckCircleFilled } from "@ant-design/icons";
+import { Button } from "../Button";
+import { cartActions } from "@/stories/cart";
 
 export default function Header() {
   const [onpenSearchDrawer, setOpenSearchDrawer] = useState(false);
+  const [onpenCartDrawer, setOpenCartDrawer] = useState(false);
   const { user } = useAuth();
+  const { cart, openCartOver } = useCart();
   const dispatch = useDispatch();
   return (
     <>
       <SearchDrawer
         open={onpenSearchDrawer}
         onClose={() => setOpenSearchDrawer(false)}
+      />
+      <CartDrawer
+        open={onpenCartDrawer}
+        onClose={() => setOpenCartDrawer(false)}
       />
       {/* NAVBAR */}
       <div className="navbar navbar-topbar navbar-expand-xl navbar-light bg-light">
@@ -241,15 +252,43 @@ export default function Header() {
                 </a>
               </li>
               <li className="nav-item ml-lg-n4">
-                <a
-                  className="nav-link"
-                  data-toggle="modal"
-                  href="#modalShoppingCart"
+                <Popover
+                  onOpenChange={(visible) => {
+                    console.log(visible);
+                    if (!visible) {
+                      dispatch(cartActions.togglePopover(false));
+                    }
+                  }}
+                  trigger={["click"]}
+                  open={openCartOver}
+                  placement="bottomRight"
+                  content={
+                    <>
+                      <p className="mb-0 flex gap-2 items-center">
+                        <span className="text-green-500">
+                          <CheckCircleFilled />
+                        </span>
+                        Thêm sản phẩm vào giỏ hàng thành công
+                      </p>
+                      <Button className="w-full btn-xs mt-2">
+                        Xem giỏ hàng và thanh toán
+                      </Button>
+                    </>
+                  }
                 >
-                  <span data-cart-items={2}>
-                    <i className="fe fe-shopping-cart" />
-                  </span>
-                </a>
+                  <a
+                    className="nav-link"
+                    href="#"
+                    onClick={(ev) => {
+                      ev.preventDefault();
+                      setOpenCartDrawer(true);
+                    }}
+                  >
+                    <span data-cart-items={cart?.totalQuantity || undefined}>
+                      <i className="fe fe-shopping-cart" />
+                    </span>
+                  </a>
+                </Popover>
               </li>
               {user ? (
                 <Dropdown

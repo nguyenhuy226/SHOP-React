@@ -7,6 +7,7 @@ export const ORGANIZATION_API = import.meta.env.VITE_ORGANIZATION_API;
 export const USER_API = import.meta.env.VITE_USER_API;
 export const AUTHENTICATION_API = import.meta.env.VITE_AUTHENTICATION_API;
 
+let refeshTokenPromise = null;
 export const http = axios.create();
 
 http.interceptors.response.use(
@@ -19,14 +20,20 @@ http.interceptors.response.use(
         err.response.status === 403 &&
         err.response.data.error_code === "TOKEN_EXPIRED"
       ) {
-        console.log("refesh token");
-        //refreshToken:
-        const token = getToken();
-        const res = await authService?.refreshToken({
-          refreshToken: token.refreshToken,
-        });
-        setToken(res.data);
-        // thực hiện lại api lỗi
+        if (refeshTokenPromise) {
+          await refeshTokenPromise;
+        } else {
+          console.log("refesh token");
+          //refreshToken:
+          const token = getToken();
+          refeshTokenPromise = authService?.refreshToken({
+            refreshToken: token.refreshToken,
+          });
+          const res = await refeshTokenPromise;
+          setToken(res.data);
+          refeshTokenPromise = null;
+          // thực hiện lại api lỗi
+        }
         return http(err.config);
       }
     } catch (error) {}

@@ -18,6 +18,7 @@ export const Radio = ({ children, ...props }) => {
         checked={props.value == value}
         className="custom-control-input"
         type="radio"
+        readOnly
       />
       <label
         className="custom-control-label flex items-center"
@@ -40,7 +41,12 @@ Radio.Toggle = ({ children, ...props }) => {
         onChange(props.value);
       }}
     >
-      <input type="radio" name="gender" checked={props.value == value} />{" "}
+      <input
+        type="radio"
+        name="gender"
+        checked={props.value == value}
+        readOnly
+      />{" "}
       {children}
     </label>
   );
