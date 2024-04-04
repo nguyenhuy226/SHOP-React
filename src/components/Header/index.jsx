@@ -254,7 +254,6 @@ export default function Header() {
               <li className="nav-item ml-lg-n4">
                 <Popover
                   onOpenChange={(visible) => {
-                    console.log(visible);
                     if (!visible) {
                       dispatch(cartActions.togglePopover(false));
                     }
