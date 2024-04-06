@@ -8,42 +8,54 @@ import { Spin } from "antd";
 
 export const CartItem = ({ productId, product, quantity }) => {
   const dispatch = useDispatch();
-  const inputRef = useRef();
+  // const inputRef = useRef();
   const [_quantity, setQuantity] = useState(quantity);
   const { loading } = useCart();
   const _loading = loading[productId] || false;
+  const [openPopconfirm, setOpenPopconfirm] = useState(false);
+  const [openPopconfirmQuantity, setOpenPopconfirmQuantity] = useState(false);
 
   useEffect(() => {
-    if (parseInt(inputRef.current.value) !== quantity) {
-      inputRef.current.value = quantity;
+    if (_quantity !== quantity) {
+      setQuantity(quantity);
     }
   }, [quantity]);
 
   const onDecrement = () => {
-    console.log(inputRef.current.value);
-    inputRef.current.value--;
-    dispatch(
-      updateCartItemAction({
-        productId,
-        quantity: inputRef.current.value,
-      })
-    );
+    setQuantity((prevQuantity) => {
+      const newQuantity = prevQuantity - 1;
+      dispatch(
+        updateCartItemAction({
+          productId,
+          quantity: newQuantity,
+        })
+      );
+      return newQuantity;
+    });
   };
   const onIncement = () => {
-    inputRef.current.value++;
+    setQuantity((prevQuantity) => {
+      const newQuantity = prevQuantity + 1;
+      dispatch(
+        updateCartItemAction({
+          productId,
+          quantity: newQuantity,
+        })
+      );
+      return newQuantity;
+    });
+  };
+  const onUpdateQuantity = (val) => {
     dispatch(
       updateCartItemAction({
         productId,
-        quantity: inputRef.current.value,
+        quantity: val,
       })
     );
   };
-
-  const onRemoveCartItem = (ev) => {
-    ev.preventDefault();
+  const onRemoveCartItem = () => {
     dispatch(removeCartItemAction(productId));
   };
-  console.log(_quantity);
 
   return (
     <Spin spinning={_loading}>
@@ -88,8 +100,13 @@ export const CartItem = ({ productId, product, quantity }) => {
               {/* Select */}
               <div className="btn-group btn-quantity">
                 <Popconfirm
-                  onConfirm={onRemoveCartItem}
-                  disabled={false}
+                  open={openPopconfirmQuantity}
+                  onOpenChange={(visible) => setOpenPopconfirmQuantity(visible)}
+                  onConfirm={() => {
+                    setOpenPopconfirmQuantity(false);
+                    onRemoveCartItem();
+                  }}
+                  disabled={_quantity > 1}
                   placement="bottomRight"
                   okText="Xóa"
                   showCancel={false}
@@ -104,11 +121,19 @@ export const CartItem = ({ productId, product, quantity }) => {
                     -
                   </button>
                 </Popconfirm>
-                {console.log(_quantity)}
                 <input
-                  ref={inputRef}
                   value={_quantity}
-                  onChange={(ev) => setQuantity(parseInt(ev.target.value))}
+                  onChange={(ev) => setQuantity(ev.target.value)}
+                  onBlur={(ev) => {
+                    let val = parseInt(ev.target.value);
+                    if (!val) {
+                      val = 1;
+                      setQuantity(val);
+                    }
+                    if (val !== quantity) {
+                      onUpdateQuantity(val);
+                    }
+                  }}
                 />
                 <button onClick={onIncement} className="btn">
                   +
@@ -116,12 +141,17 @@ export const CartItem = ({ productId, product, quantity }) => {
               </div>
               {/* Remove */}
               <Popconfirm
+                open={openPopconfirm}
+                onOpenChange={(visible) => setOpenPopconfirm(visible)}
                 placement="bottomRight"
                 okText="Xóa"
                 showCancel={false}
                 title="Thông báo"
                 description="Bạn có chắc chắn muốn xóa sản phẩm này không"
-                onConfirm={onRemoveCartItem}
+                onConfirm={() => {
+                  setOpenPopconfirm(false);
+                  onRemoveCartItem();
+                }}
               >
                 <a
                   onClick={(ev) => ev.preventDefault()}

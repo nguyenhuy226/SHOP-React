@@ -72,7 +72,7 @@ export default function Account() {
   const onLogin = async () => {
     if (formLogin.validate()) {
       try {
-        await dispatch(loginAction(formLogin.values)).unwrap();
+        dispatch(loginAction(formLogin.values));
         message.success("đăng nhập thành công!");
       } catch (error) {
         handleError(error);
