@@ -1,12 +1,17 @@
-import { removeCartItemAction, updateCartItemAction } from "@/stories/cart";
+import {
+  removeCartItemAction,
+  toggleCheckoutItemAction,
+  updateCartItemAction,
+} from "@/stories/cart";
 import { currency } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Popconfirm } from "../Popcomfirm";
 import { useCart } from "@/hooks/useCart";
 import { Spin } from "antd";
+import { Checkbox } from "../Checkout";
 
-export const CartItem = ({ productId, product, quantity }) => {
+export const CartItem = ({ allowSelect, productId, product, quantity }) => {
   const dispatch = useDispatch();
   // const inputRef = useRef();
   const [_quantity, setQuantity] = useState(quantity);
@@ -57,10 +62,20 @@ export const CartItem = ({ productId, product, quantity }) => {
     dispatch(removeCartItemAction(productId));
   };
 
+  const onSelectCartItem = (checked) => {
+    dispatch(
+      toggleCheckoutItemAction({
+        checked,
+        productId,
+      })
+    );
+  };
+
   return (
     <Spin spinning={_loading}>
       <li className="list-group-item">
         <div className="row align-items-center">
+          {allowSelect && <Checkbox onChange={onSelectCartItem} />}
           <div className="w-[120px]">
             {/* Image */}
             <a href="./product.html">

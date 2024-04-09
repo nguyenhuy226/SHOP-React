@@ -8,6 +8,7 @@ import ProductPage from "@/pages/san-pham";
 import { profile } from "./ca-nhan";
 import GuestRouter from "@/components/GuestRouter";
 import Account from "@/pages/tai-khoan";
+import ViewCart from "@/pages/gio-hang";
 
 export const routes = [
   {
@@ -16,6 +17,10 @@ export const routes = [
       {
         element: <HomePage />,
         path: PATH.Home,
+      },
+      {
+        element: <ViewCart />,
+        path: PATH.ViewCart,
       },
       {
         element: <ProductPage />,

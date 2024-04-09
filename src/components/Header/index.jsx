@@ -269,9 +269,15 @@ export default function Header() {
                         </span>
                         Thêm sản phẩm vào giỏ hàng thành công
                       </p>
-                      <Button className="w-full btn-xs mt-2">
+                      <Link
+                        onClick={() =>
+                          dispatch(cartActions.togglePopover(false))
+                        }
+                        className="w-full btn-xs mt-2 btn btn-dark btn-sm flex items-center justify-center gap-2 w-full btn-xs"
+                        to={PATH.ViewCart}
+                      >
                         Xem giỏ hàng và thanh toán
-                      </Button>
+                      </Link>
                     </>
                   }
                 >
