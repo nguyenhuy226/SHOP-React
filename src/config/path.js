@@ -7,6 +7,7 @@ export const PATH = {
   Category: "/:slug/:id",
   ViewCart: "/gio-hang",
   Checkout: "/checkout",
+  OrderComplete: "/dat-hang-thanh-cong",
   Profile: {
     Index: PROFILE,
     Oder: PROFILE + "/don-hang",

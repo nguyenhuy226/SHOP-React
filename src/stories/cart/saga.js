@@ -78,6 +78,7 @@ export function* fetchCart() {
 
 export function* clearCart() {
   yield put(cartActions.setCart(null));
+  yield put(cartActions.clearCart());
   //   getInitialState()
 }
 export function* setCartSaga(action) {

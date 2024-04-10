@@ -10,6 +10,7 @@ import GuestRouter from "@/components/GuestRouter";
 import Account from "@/pages/tai-khoan";
 import ViewCart from "@/pages/gio-hang";
 import Checkout from "@/pages/checkout";
+import OrderComplete from "@/pages/dat-hang-thanh-cong";
 
 export const routes = [
   {
@@ -26,6 +27,10 @@ export const routes = [
       {
         element: <ViewCart />,
         path: PATH.ViewCart,
+      },
+      {
+        element: <OrderComplete />,
+        path: PATH.OrderComplete,
       },
       {
         element: <ProductPage />,

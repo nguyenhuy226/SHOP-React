@@ -29,6 +29,7 @@ export const {
       preCheckoutData: {
         promotionCode: [],
         listItems: [],
+        shippingMethod: "mien-phi",
       },
       preCheckoutLoading: false,
       preCheckoutResponse: {},
@@ -36,6 +37,21 @@ export const {
     };
   },
   reducers: {
+    clearCart(state) {
+      return {
+        ...state,
+        openCartOver: false,
+        loading: {},
+        preCheckoutData: {
+          promotionCode: [],
+          listItems: [],
+          shippingMethod: "mien-phi",
+        },
+        preCheckoutLoading: false,
+        preCheckoutResponse: {},
+        promotionLoading: false,
+      };
+    },
     setCart(state, action) {
       state.cart = action.payload;
     },
@@ -64,6 +80,9 @@ export const {
     tooglePromotionLoading(state, action) {
       state.promotionLoading = action.payload;
     },
+    changeShippingMethod(state, action) {
+      state.preCheckoutData.shippingMethod = action.payload;
+    },
   },
 });
 export const updateCartItemAction = createAction(`${name}/addCartItem`);
@@ -79,7 +98,10 @@ export const removePromotionAction = createAction(`${name}/removePromotion`);
 export function* cartSaga() {
   yield takeLatest(updateCartItemAction, fetchCartItem);
   yield takeLatest(removeCartItemAction, fetchRemoveItem);
-  yield takeLatest([getCartAction, loginSuccessAction], fetchCart);
+  yield takeLatest(
+    [getCartAction, loginSuccessAction, cartActions.clearCart],
+    fetchCart
+  );
   yield takeLatest(logoutAction, clearCart);
   yield takeLatest(cartActions.setCart, setCartSaga);
   yield takeLatest(toggleCheckoutItemAction, selectCartItem);
@@ -88,6 +110,7 @@ export function* cartSaga() {
       cartActions.setPreCheckoutData,
       updateItemQuantitySuccessAction,
       cartActions.togglePromotionCode,
+      cartActions.changeShippingMethod,
     ],
     fetchPreCheckout
   );

@@ -1,17 +1,15 @@
-import React, { useRef } from "react";
-import Skeleton from "../Skeleton";
-import { withLoading } from "@/utils/withLoading";
-import { withListLoading } from "@/utils/withListLoading";
-import { Button } from "../Button";
-import { AddressCardStyle } from "./style";
-import { cn, handleError } from "@/utils";
-import { userService } from "@/services/user";
-import { message } from "antd";
-import { Link, generatePath } from "react-router-dom";
 import { PATH } from "@/config";
 import { useAction } from "@/hooks/useAction";
+import { userService } from "@/services/user";
+import { cn } from "@/utils";
+import { withListLoading } from "@/utils/withListLoading";
+import { withLoading } from "@/utils/withLoading";
+import { Link, generatePath } from "react-router-dom";
+import { Button } from "../Button";
+import Skeleton from "../Skeleton";
+import { AddressCardStyle } from "./style";
 
-function AddressCard({
+export default function AddressCard({
   action,
   className,
   hideAction,
@@ -24,6 +22,7 @@ function AddressCard({
   address,
   default: addressDefault,
   onGetAddressDefault,
+  onClick,
 }) {
   // const flagRemoveAddress = useRef(false);
 
@@ -78,7 +77,7 @@ function AddressCard({
   //   }
   // };
   return (
-    <AddressCardStyle className="col-12">
+    <AddressCardStyle className="col-12" onClick={onClick}>
       {/* Card */}
       <div className={cn("card card-lg bg-light mb-8", className)}>
         <div className="card-body">
@@ -162,5 +161,5 @@ const AddressCardLoading = () => {
   );
 };
 
-export default withLoading(AddressCard, AddressCardLoading);
+export const WithAddressLoading = withLoading(AddressCard, AddressCardLoading);
 export const ListAddressCard = withListLoading(AddressCard, AddressCardLoading);

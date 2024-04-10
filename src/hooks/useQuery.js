@@ -120,7 +120,7 @@ export const useQuery = ({
     }
     if (error instanceof CanceledError) {
     } else {
-      onError(error);
+      onError?.(error);
       setError(error);
       setStatus("err");
       setLoading(false);
