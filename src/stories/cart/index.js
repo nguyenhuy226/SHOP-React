@@ -8,6 +8,7 @@ import {
   fetchCartItem,
   fetchPreCheckout,
   fetchRemoveItem,
+  removePromotion,
   selectCartItem,
   setCartSaga,
 } from "./saga";
@@ -31,6 +32,7 @@ export const {
       },
       preCheckoutLoading: false,
       preCheckoutResponse: {},
+      promotionLoading: false,
     };
   },
   reducers: {
@@ -59,6 +61,9 @@ export const {
         state.preCheckoutData.promotionCode = [];
       }
     },
+    tooglePromotionLoading(state, action) {
+      state.promotionLoading = action.payload;
+    },
   },
 });
 export const updateCartItemAction = createAction(`${name}/addCartItem`);
@@ -69,6 +74,7 @@ export const updateItemQuantitySuccessAction = createAction(
   `${name}/updateItemQuantitySuccess`
 );
 export const addPromotionAction = createAction(`${name}/addPromotion`);
+export const removePromotionAction = createAction(`${name}/removePromotion`);
 
 export function* cartSaga() {
   yield takeLatest(updateCartItemAction, fetchCartItem);
@@ -88,4 +94,5 @@ export function* cartSaga() {
 
   // promotion
   yield takeLatest(addPromotionAction, fetchAddPromotion);
+  yield takeLatest(removePromotionAction, removePromotion);
 }

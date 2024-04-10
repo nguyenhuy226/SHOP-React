@@ -9,6 +9,7 @@ import { profile } from "./ca-nhan";
 import GuestRouter from "@/components/GuestRouter";
 import Account from "@/pages/tai-khoan";
 import ViewCart from "@/pages/gio-hang";
+import Checkout from "@/pages/checkout";
 
 export const routes = [
   {
@@ -17,6 +18,10 @@ export const routes = [
       {
         element: <HomePage />,
         path: PATH.Home,
+      },
+      {
+        element: <Checkout />,
+        path: PATH.Checkout,
       },
       {
         element: <ViewCart />,

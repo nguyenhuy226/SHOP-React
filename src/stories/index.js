@@ -16,7 +16,9 @@ export const store = configureStore({
     cart: cartReducer,
   },
   devTools: ENV === "development",
-  middleware: (getMiddleware) => getMiddleware().concat(sagaMiddldeware),
+  middleware: (getMiddleware) =>
+    getMiddleware({ serializableCheck: false }).concat(sagaMiddldeware),
+  // serializableCheck: false là tắt chế kể redcux tookit kiểm tra đầu vào của 1 action có phải là một ofobject không và trong object có chưa 1 function không
 });
 
 sagaMiddldeware.run(rootSaga);

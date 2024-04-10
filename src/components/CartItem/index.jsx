@@ -3,7 +3,7 @@ import {
   toggleCheckoutItemAction,
   updateCartItemAction,
 } from "@/stories/cart";
-import { currency } from "@/utils";
+import { cn, currency } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Popconfirm } from "../Popcomfirm";
@@ -11,11 +11,22 @@ import { useCart } from "@/hooks/useCart";
 import { Spin } from "antd";
 import { Checkbox } from "../Checkout";
 
-export const CartItem = ({ allowSelect, productId, product, quantity }) => {
+export const CartItem = ({
+  footer,
+  hideAction,
+  allowSelect,
+  productId,
+  product,
+  quantity,
+  ...props
+}) => {
   const dispatch = useDispatch();
   // const inputRef = useRef();
   const [_quantity, setQuantity] = useState(quantity);
-  const { loading } = useCart();
+  const {
+    loading,
+    preCheckoutData: { listItems },
+  } = useCart();
   const _loading = loading[productId] || false;
   const [openPopconfirm, setOpenPopconfirm] = useState(false);
   const [openPopconfirmQuantity, setOpenPopconfirmQuantity] = useState(false);
@@ -70,12 +81,14 @@ export const CartItem = ({ allowSelect, productId, product, quantity }) => {
       })
     );
   };
-
+  const selected = !!listItems.find((e) => e === productId);
   return (
     <Spin spinning={_loading}>
-      <li className="list-group-item">
+      <li className={cn("list-group-item", props.className)}>
         <div className="row align-items-center">
-          {allowSelect && <Checkbox onChange={onSelectCartItem} />}
+          {allowSelect && (
+            <Checkbox checked={selected} onChange={onSelectCartItem} />
+          )}
           <div className="w-[120px]">
             {/* Image */}
             <a href="./product.html">
@@ -111,72 +124,77 @@ export const CartItem = ({ allowSelect, productId, product, quantity }) => {
               </span>
             </p>
             {/*Footer */}
-            <div className="d-flex align-items-center">
-              {/* Select */}
-              <div className="btn-group btn-quantity">
+            {!hideAction && (
+              <div className="d-flex align-items-center">
+                {/* Select */}
+                <div className="btn-group btn-quantity">
+                  <Popconfirm
+                    open={openPopconfirmQuantity}
+                    onOpenChange={(visible) =>
+                      setOpenPopconfirmQuantity(visible)
+                    }
+                    onConfirm={() => {
+                      setOpenPopconfirmQuantity(false);
+                      onRemoveCartItem();
+                    }}
+                    disabled={_quantity > 1}
+                    placement="bottomRight"
+                    okText="Xóa"
+                    showCancel={false}
+                    title="Thông báo"
+                    description="Bạn có chắc chắn muốn xóa sản phẩm này không"
+                  >
+                    {/* {console.log(_quantity < 1)} */}
+                    <button
+                      onClick={_quantity > 1 ? onDecrement : undefined}
+                      className="btn"
+                    >
+                      -
+                    </button>
+                  </Popconfirm>
+                  <input
+                    value={_quantity}
+                    onChange={(ev) => setQuantity(ev.target.value)}
+                    onBlur={(ev) => {
+                      let val = parseInt(ev.target.value);
+                      if (!val) {
+                        val = 1;
+                        setQuantity(val);
+                      }
+                      if (val !== quantity) {
+                        onUpdateQuantity(val);
+                      }
+                    }}
+                  />
+                  <button onClick={onIncement} className="btn">
+                    +
+                  </button>
+                </div>
+                {/* Remove */}
                 <Popconfirm
-                  open={openPopconfirmQuantity}
-                  onOpenChange={(visible) => setOpenPopconfirmQuantity(visible)}
-                  onConfirm={() => {
-                    setOpenPopconfirmQuantity(false);
-                    onRemoveCartItem();
-                  }}
-                  disabled={_quantity > 1}
+                  open={openPopconfirm}
+                  onOpenChange={(visible) => setOpenPopconfirm(visible)}
                   placement="bottomRight"
                   okText="Xóa"
                   showCancel={false}
                   title="Thông báo"
                   description="Bạn có chắc chắn muốn xóa sản phẩm này không"
-                >
-                  {/* {console.log(_quantity < 1)} */}
-                  <button
-                    onClick={_quantity > 1 ? onDecrement : undefined}
-                    className="btn"
-                  >
-                    -
-                  </button>
-                </Popconfirm>
-                <input
-                  value={_quantity}
-                  onChange={(ev) => setQuantity(ev.target.value)}
-                  onBlur={(ev) => {
-                    let val = parseInt(ev.target.value);
-                    if (!val) {
-                      val = 1;
-                      setQuantity(val);
-                    }
-                    if (val !== quantity) {
-                      onUpdateQuantity(val);
-                    }
+                  onConfirm={() => {
+                    setOpenPopconfirm(false);
+                    onRemoveCartItem();
                   }}
-                />
-                <button onClick={onIncement} className="btn">
-                  +
-                </button>
-              </div>
-              {/* Remove */}
-              <Popconfirm
-                open={openPopconfirm}
-                onOpenChange={(visible) => setOpenPopconfirm(visible)}
-                placement="bottomRight"
-                okText="Xóa"
-                showCancel={false}
-                title="Thông báo"
-                description="Bạn có chắc chắn muốn xóa sản phẩm này không"
-                onConfirm={() => {
-                  setOpenPopconfirm(false);
-                  onRemoveCartItem();
-                }}
-              >
-                <a
-                  onClick={(ev) => ev.preventDefault()}
-                  className="font-size-xs text-gray-400 ml-auto"
-                  href="#!"
                 >
-                  <i className="fe fe-x" /> Xóa
-                </a>
-              </Popconfirm>
-            </div>
+                  <a
+                    onClick={(ev) => ev.preventDefault()}
+                    className="font-size-xs text-gray-400 ml-auto"
+                    href="#!"
+                  >
+                    <i className="fe fe-x" /> Xóa
+                  </a>
+                </Popconfirm>
+              </div>
+            )}
+            {footer}
           </div>
         </div>
       </li>

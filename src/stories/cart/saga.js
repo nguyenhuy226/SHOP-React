@@ -133,9 +133,19 @@ export function* fetchPreCheckout(action) {
 
 export function* fetchAddPromotion(action) {
   try {
-    yield call(cartService.getPromotion, action.payload);
-    yield put(cartActions.togglePromotionCode(action.payload));
+    yield put(cartActions.tooglePromotionLoading(true));
+    yield call(cartService.getPromotion, action.payload.data);
+    yield put(cartActions.togglePromotionCode(action.payload.data));
+    action.payload?.onSuccess?.();
   } catch (error) {
-    handleError(error);
+    action.payload?.onError?.(error);
+    // handleError(error);
+  } finally {
+    yield put(cartActions.tooglePromotionLoading(false));
   }
+}
+
+export function* removePromotion(action) {
+  yield put(cartActions.togglePromotionCode());
+  action?.payload?.onSuccess?.();
 }

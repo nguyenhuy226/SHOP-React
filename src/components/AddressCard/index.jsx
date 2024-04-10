@@ -4,7 +4,7 @@ import { withLoading } from "@/utils/withLoading";
 import { withListLoading } from "@/utils/withListLoading";
 import { Button } from "../Button";
 import { AddressCardStyle } from "./style";
-import { handleError } from "@/utils";
+import { cn, handleError } from "@/utils";
 import { userService } from "@/services/user";
 import { message } from "antd";
 import { Link, generatePath } from "react-router-dom";
@@ -12,6 +12,9 @@ import { PATH } from "@/config";
 import { useAction } from "@/hooks/useAction";
 
 function AddressCard({
+  action,
+  className,
+  hideAction,
   _id,
   fullName,
   email,
@@ -77,7 +80,7 @@ function AddressCard({
   return (
     <AddressCardStyle className="col-12">
       {/* Card */}
-      <div className="card card-lg bg-light mb-8">
+      <div className={cn("card card-lg bg-light mb-8", className)}>
         <div className="card-body">
           {/* Text */}
           <p className="font-size-sm mb-0 leading-[35px]">
@@ -93,40 +96,46 @@ function AddressCard({
             <b>Tỉnh / thành phố:</b> {province} <br />
             <b>Địa chỉ:</b> {address}
           </p>
-          <div className="card-action-right-bottom">
-            {addressDefault ? (
-              <div className="color-success cursor-pointer">
-                Địa chỉ mặc định
-              </div>
-            ) : (
-              <Button
-                onClick={onChangeAddressDefault}
-                outline
-                className="hidden btn-change-default btn-xs"
-              >
-                Đặt làm địa chỉ mặc định
-              </Button>
-            )}
-          </div>
+          {!hideAction && (
+            <div className="card-action-right-bottom">
+              {addressDefault ? (
+                <div className="color-success cursor-pointer">
+                  Địa chỉ mặc định
+                </div>
+              ) : (
+                <Button
+                  onClick={onChangeAddressDefault}
+                  outline
+                  className="hidden btn-change-default btn-xs"
+                >
+                  Đặt làm địa chỉ mặc định
+                </Button>
+              )}
+            </div>
+          )}
+
           {/* Action */}
-          <div className="card-action card-action-right flex gap-2">
-            {/* Button */}
-            <Link
-              className="btn btn-xs btn-circle btn-white-primary"
-              to={generatePath(PATH.Profile.EditAddress, { id: _id })}
-            >
-              <i className="fe fe-edit-2" />
-            </Link>
-            {!addressDefault && (
-              <button
-                onClick={_onDeleteAddress}
+          {!hideAction && (
+            <div className="card-action card-action-right flex gap-2">
+              {/* Button */}
+              <Link
                 className="btn btn-xs btn-circle btn-white-primary"
-                href="account-address-edit.html"
+                to={generatePath(PATH.Profile.EditAddress, { id: _id })}
               >
-                <i className="fe fe-x" />
-              </button>
-            )}
-          </div>
+                <i className="fe fe-edit-2" />
+              </Link>
+              {!addressDefault && (
+                <button
+                  onClick={_onDeleteAddress}
+                  className="btn btn-xs btn-circle btn-white-primary"
+                  href="account-address-edit.html"
+                >
+                  <i className="fe fe-x" />
+                </button>
+              )}
+            </div>
+          )}
+          {action}
         </div>
       </div>
     </AddressCardStyle>

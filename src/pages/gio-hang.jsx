@@ -5,16 +5,21 @@ import { PATH } from "@/config";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { useForm } from "@/hooks/useForm";
-import { addPromotionAction } from "@/stories/cart";
-import { cn, currency, required } from "@/utils";
-import { Spin } from "antd";
+import { addPromotionAction, removePromotionAction } from "@/stories/cart";
+import { cn, currency, handleError, required } from "@/utils";
+import { message, Spin } from "antd";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function ViewCart() {
-  const { cart, preCheckoutResponse, preCheckoutLoading, preCheckoutData } =
-    useCart();
+  const {
+    cart,
+    preCheckoutResponse,
+    preCheckoutLoading,
+    preCheckoutData,
+    promotionLoading,
+  } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const promotionForm = useForm({
@@ -30,8 +35,27 @@ export default function ViewCart() {
 
   const onSubmitPromotion = () => {
     if (promotionForm.validate()) {
-      dispatch(addPromotionAction(promotionForm.values.code));
+      dispatch(
+        addPromotionAction({
+          data: promotionForm.values.code,
+          onSuccess: () => {
+            promotionForm.reset();
+            message.success("Thêm mã giảm giá thành công");
+          },
+          onError: handleError,
+        })
+      );
     }
+  };
+
+  const onRemovePromotion = () => {
+    dispatch(
+      removePromotionAction({
+        onSuccess: () => {
+          message.success("Xóa mã giảm giá thành công");
+        },
+      })
+    );
   };
   const { promotion } = preCheckoutResponse;
   return (
@@ -61,7 +85,10 @@ export default function ViewCart() {
                         <div className="promotion-code-card mb-5">
                           <div className="font-bold">{promotion.title}</div>
                           <div className="text-sm">{promotion.description}</div>
-                          <i className="fe fe-x close" />
+                          <i
+                            className="fe fe-x close"
+                            onClick={onRemovePromotion}
+                          />
                         </div>
                       )}
                       {/* Coupon */}
@@ -79,7 +106,12 @@ export default function ViewCart() {
                                 }
                                 className="form-control form-control-sm"
                               />
-                              <Button onClick={onSubmitPromotion}>Apply</Button>
+                              <Button
+                                onClick={onSubmitPromotion}
+                                loading={promotionLoading}
+                              >
+                                Apply
+                              </Button>
                             </div>
                           )}
                         />
@@ -102,7 +134,8 @@ export default function ViewCart() {
                           <li className="list-group-item d-flex">
                             <span>Promotion</span>{" "}
                             <span className="ml-auto font-size-sm">
-                              -{currency(promotion?.discount)}
+                              {promotion?.discount > 0 ? "-" : ""}
+                              {currency(promotion?.discount)}
                             </span>
                           </li>
                           <li className="list-group-item d-flex">
@@ -129,17 +162,17 @@ export default function ViewCart() {
                     className={cn("btn btn-block btn-dark mb-2", {
                       disabled: !preCheckoutData?.listItems?.length,
                     })}
-                    to="checkout.html"
+                    to={PATH.Checkout}
                   >
                     Proceed to Checkout
                   </Link>
                   {/* Link */}
-                  <a
+                  <Link
                     className="btn btn-link btn-sm px-0 text-body"
-                    href="shop.html"
+                    to={PATH.Product}
                   >
                     <i className="fe fe-arrow-left mr-2" /> Continue Shopping
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
