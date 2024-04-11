@@ -2,6 +2,7 @@ import { PATH } from "@/config";
 import ProfileLayout from "@/layouts/ProfileLayout";
 import ProfilePage from "@/pages/ca-nhan";
 import Order from "@/pages/ca-nhan/don-hang";
+import { OrderDetail } from "@/pages/ca-nhan/don-hang/[id]";
 import WishlistPage from "@/pages/ca-nhan/san-pham-yeu-thich";
 import Address from "@/pages/ca-nhan/so-dia-chi";
 import AddressAction from "@/pages/ca-nhan/so-dia-chi/action";
@@ -18,7 +19,11 @@ export const profile = [
       },
       {
         element: <Order />,
-        path: PATH.Profile.Oder,
+        path: PATH.Profile.Order,
+      },
+      {
+        element: <OrderDetail />,
+        path: PATH.Profile.OrderDetail,
       },
       {
         element: <Address />,

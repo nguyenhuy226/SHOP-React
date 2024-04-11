@@ -2,6 +2,19 @@ const TOKEN_KEY = "token";
 const USER_KEY = "user";
 const CART_KEY = "cart";
 
+const createStoreNameSpace = (name) => {
+  return {
+    set: (data) => {
+      localStorage.setItem(name, JSON.stringify(data));
+    },
+    get: () => {
+      return JSON.parse(localStorage.getItem(name));
+    },
+    clear: () => {
+      localStorage.removeItem(name);
+    },
+  };
+};
 export const setToken = (data) => {
   localStorage.setItem(TOKEN_KEY, JSON.stringify(data));
 };
@@ -31,3 +44,9 @@ export const getCart = () => {
 export const clearCart = () => {
   localStorage.removeItem(CART_KEY);
 };
+
+export const storePreCheckoutResponse = createStoreNameSpace(
+  "pre-checkout-response"
+);
+
+export const storePreCheckoutData = createStoreNameSpace("pre-checkout-data");

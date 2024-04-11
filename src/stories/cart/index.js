@@ -12,7 +12,11 @@ import {
   selectCartItem,
   setCartSaga,
 } from "./saga";
-import { getCart } from "@/utils";
+import {
+  getCart,
+  storePreCheckoutData,
+  storePreCheckoutResponse,
+} from "@/utils";
 
 export const {
   reducer: cartReducer,
@@ -26,13 +30,13 @@ export const {
       cart: getCart(),
       openCartOver: false,
       loading: {},
-      preCheckoutData: {
+      preCheckoutData: storePreCheckoutData.get() || {
         promotionCode: [],
         listItems: [],
         shippingMethod: "mien-phi",
       },
       preCheckoutLoading: false,
-      preCheckoutResponse: {},
+      preCheckoutResponse: storePreCheckoutResponse.get() || {},
       promotionLoading: false,
     };
   },

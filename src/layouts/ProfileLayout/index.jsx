@@ -20,7 +20,7 @@ export default function ProfileLayout() {
               <div className="list-group list-group-sm list-group-strong list-group-flush-x">
                 <NavLink
                   className="list-group-item list-group-item-action dropright-toggle "
-                  to="account-orders.html"
+                  to={PATH.Profile.Order}
                 >
                   Theo dõi đơn hàng
                 </NavLink>

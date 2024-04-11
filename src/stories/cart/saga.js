@@ -1,5 +1,11 @@
 import { cartService } from "@/services/cart";
-import { getToken, handleError, setCart } from "@/utils";
+import {
+  getToken,
+  handleError,
+  setCart,
+  storePreCheckoutData,
+  storePreCheckoutResponse,
+} from "@/utils";
 import { call, delay, put, race, select, take } from "redux-saga/effects";
 import {
   cartActions,
@@ -127,6 +133,8 @@ export function* fetchPreCheckout(action) {
     yield put(cartActions.setPreCheckoutResponse(res.data));
 
     yield put(cartActions.togglePreCheckoutLoading(false));
+    storePreCheckoutData.set(preCheckoutData);
+    storePreCheckoutResponse.set(res.data);
   } catch (error) {
     handleError(error);
   }

@@ -1,6 +1,6 @@
 import { PATH } from "@/config";
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function OrderComplete() {
   const { state } = useLocation();
@@ -27,9 +27,9 @@ export default function OrderComplete() {
               accont.
             </p>
             {/* Button */}
-            <a className="btn btn-dark" href="./account-order.html">
+            <Link className="btn btn-dark" to={PATH.Profile.Order}>
               View My Orders
-            </a>
+            </Link>
           </div>
         </div>
       </div>
