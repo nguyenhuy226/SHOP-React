@@ -11,7 +11,7 @@ import { useQuery } from "@/hooks/useQuery";
 import { cartService } from "@/services/cart";
 import { userService } from "@/services/user";
 import { cartActions } from "@/stories/cart";
-import { currency, regexp, required } from "@/utils";
+import { currency, regexp, required, storeAddressSelect } from "@/utils";
 import { Spin } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -31,12 +31,13 @@ export default function Checkout() {
   const { preCheckoutResponse, preCheckoutLoading, preCheckoutData } =
     useCart();
   const [openAddressDrawer, setOpenAddressDrawer] = useState(false);
-  const [address, setAddress] = useState();
+  const [address, setAddress] = useState(() => storeAddressSelect.get());
   const dispatch = useDispatch();
 
   const addressForm = useForm(addressRules);
 
   const { loading: addressLoading } = useQuery({
+    enable: !address,
     queryFn: () => userService.getAddress("?default=true"),
     onSuccess: (res) => {
       if (res?.data?.[0]) {
@@ -98,7 +99,10 @@ export default function Checkout() {
         open={openAddressDrawer}
         onClose={() => setOpenAddressDrawer(false)}
         selected={address}
-        onSelect={setAddress}
+        onSelect={(address) => {
+          setAddress(address);
+          storeAddressSelect.set(address);
+        }}
       />
       <div>
         <section className="pt-7 pb-12">

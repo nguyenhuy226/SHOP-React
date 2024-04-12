@@ -1,3 +1,8 @@
+import {
+  storeCart,
+  storePreCheckoutData,
+  storePreCheckoutResponse,
+} from "@/utils";
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { takeLatest } from "redux-saga/effects";
 import { loginSuccessAction, logoutAction } from "../auth";
@@ -11,12 +16,8 @@ import {
   removePromotion,
   selectCartItem,
   setCartSaga,
+  updatePreCheckoutData,
 } from "./saga";
-import {
-  getCart,
-  storePreCheckoutData,
-  storePreCheckoutResponse,
-} from "@/utils";
 
 export const {
   reducer: cartReducer,
@@ -27,7 +28,7 @@ export const {
   name: "cart",
   initialState: () => {
     return {
-      cart: getCart(),
+      cart: storeCart.get(),
       openCartOver: false,
       loading: {},
       preCheckoutData: storePreCheckoutData.get() || {
@@ -106,7 +107,7 @@ export function* cartSaga() {
     [getCartAction, loginSuccessAction, cartActions.clearCart],
     fetchCart
   );
-  yield takeLatest(logoutAction, clearCart);
+  yield takeLatest([logoutAction, cartActions.clearCart], clearCart);
   yield takeLatest(cartActions.setCart, setCartSaga);
   yield takeLatest(toggleCheckoutItemAction, selectCartItem);
   yield takeLatest(
@@ -122,4 +123,6 @@ export function* cartSaga() {
   // promotion
   yield takeLatest(addPromotionAction, fetchAddPromotion);
   yield takeLatest(removePromotionAction, removePromotion);
+
+  yield takeLatest(removeCartItemAction, updatePreCheckoutData);
 }

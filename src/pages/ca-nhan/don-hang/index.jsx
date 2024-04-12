@@ -1,3 +1,4 @@
+import { ListOrder } from "@/components/ListOrder";
 import OrderCard from "@/components/OrderCard";
 import { Tab } from "@/components/Tab";
 import { useQuery } from "@/hooks/useQuery";
@@ -5,25 +6,6 @@ import { orderService } from "@/services/order";
 import { Badge } from "antd";
 
 export default function Order() {
-  const { data: allData } = useQuery({
-    queryFn: () => orderService.getOrder(),
-  });
-  const { data: pendingData } = useQuery({
-    queryFn: () => orderService.getOrder("?status=pending"),
-  });
-  const { data: confirmData } = useQuery({
-    queryFn: () => orderService.getOrder("?status=confirm"),
-  });
-  const { data: shippingData } = useQuery({
-    queryFn: () => orderService.getOrder("?status=shipping"),
-  });
-  const { data: finishedData } = useQuery({
-    queryFn: () => orderService.getOrder("?status=finished"),
-  });
-  const { data: cancleData } = useQuery({
-    queryFn: () => orderService.getOrder("?status=cancel"),
-  });
-
   const { data: pendingCount } = useQuery({
     queryFn: () => orderService.getCount("?status=pending"),
   });
@@ -34,7 +16,7 @@ export default function Order() {
     queryFn: () => orderService.getCount("?status=shipping"),
   });
   return (
-    <Tab defaultAcitve="all">
+    <Tab defaultAcitve="all" removeOnDeActive>
       <div className="nav mb-10">
         <Tab.Title value="all">Tất cả đơn</Tab.Title>
         <Badge count={pendingCount?.count}>
@@ -51,32 +33,27 @@ export default function Order() {
       </div>
       <div className="tab-content">
         <Tab.Content value="all">
-          {allData &&
-            allData?.data?.map((e) => <OrderCard key={e._id} {...e} />)}
+          <ListOrder />
         </Tab.Content>
         <Tab.Content value="pending">
-          {pendingData &&
-            pendingData?.data?.map((e) => <OrderCard key={e._id} {...e} />)}
+          <ListOrder status="pending" />
         </Tab.Content>
         <Tab.Content value="confirm">
-          {confirmData &&
-            confirmData?.data?.map((e) => <OrderCard key={e._id} {...e} />)}
+          <ListOrder status="confirm" />
         </Tab.Content>
         <Tab.Content value="shipping">
-          {shippingData &&
-            shippingData?.data?.map((e) => <OrderCard key={e._id} {...e} />)}
+          <ListOrder status="shipping" />
         </Tab.Content>
         <Tab.Content value="finished">
+          <ListOrder status="finished" />
+
           {/* <div className="flex items-center flex-col gap-5 text-center">
             <img width={200} src="/img/empty-order.png" alt />
             <p>Chưa có đơn hàng nào</p>
           </div> */}
-          {finishedData &&
-            finishedData?.data?.map((e) => <OrderCard key={e._id} {...e} />)}
         </Tab.Content>
         <Tab.Content value="cancel">
-          {cancleData &&
-            cancleData?.data?.map((e) => <OrderCard key={e._id} {...e} />)}
+          <ListOrder status="cancel" />
         </Tab.Content>
       </div>
       {/* Pagination */}

@@ -2,7 +2,8 @@ import { cartService } from "@/services/cart";
 import {
   getToken,
   handleError,
-  setCart,
+  storeAddressSelect,
+  storeCart,
   storePreCheckoutData,
   storePreCheckoutResponse,
 } from "@/utils";
@@ -11,10 +12,10 @@ import {
   cartActions,
   getCartAction,
   removeCartItemAction,
-  updateCartItemAction,
   updateItemQuantitySuccessAction,
 } from ".";
 import { authActions } from "../auth";
+import { isArray } from "lodash";
 
 export function* fetchCartItem(action) {
   try {
@@ -62,7 +63,7 @@ export function* fetchRemoveItem(action) {
         loading: false,
       })
     );
-    yield put(updateItemQuantitySuccessAction(action.payload));
+    // yield put(updateItemQuantitySuccessAction(action.payload));
   } catch (error) {
     console.log(error);
   }
@@ -83,12 +84,17 @@ export function* fetchCart() {
 }
 
 export function* clearCart() {
+  storePreCheckoutData.clear();
+  storePreCheckoutResponse.clear();
+  storeAddressSelect.clear();
+  storeCart.clear();
   yield put(cartActions.setCart(null));
-  yield put(cartActions.clearCart());
+  // yield put(cartActions.clearCart());
   //   getInitialState()
 }
+
 export function* setCartSaga(action) {
-  setCart(action.payload);
+  storeCart.set(action.payload);
 }
 
 export function* selectCartItem(action) {
@@ -157,4 +163,20 @@ export function* fetchAddPromotion(action) {
 export function* removePromotion(action) {
   yield put(cartActions.togglePromotionCode());
   action?.payload?.onSuccess?.();
+}
+
+export function* updatePreCheckoutData(action) {
+  let {
+    cart: { preCheckoutData },
+  } = yield select();
+  if (preCheckoutData.listItems.find((e) => e === action.payload)) {
+    yield put(
+      cartActions.setPreCheckoutData({
+        ...preCheckoutData,
+        listItems: preCheckoutData.listItems.filter(
+          (e) => e !== action.payload
+        ),
+      })
+    );
+  }
 }

@@ -35,18 +35,9 @@ export const clearUser = () => {
   localStorage.removeItem(USER_KEY);
 };
 
-export const setCart = (data) => {
-  localStorage.setItem(CART_KEY, JSON.stringify(data));
-};
-export const getCart = () => {
-  return JSON.parse(localStorage.getItem(CART_KEY));
-};
-export const clearCart = () => {
-  localStorage.removeItem(CART_KEY);
-};
-
 export const storePreCheckoutResponse = createStoreNameSpace(
   "pre-checkout-response"
 );
-
+export const storeCart = createStoreNameSpace("cart");
 export const storePreCheckoutData = createStoreNameSpace("pre-checkout-data");
+export const storeAddressSelect = createStoreNameSpace("pre-checkout-address");

@@ -2,10 +2,10 @@ import { cn } from "@/utils";
 import { createContext, useContext, useState } from "react";
 
 const Context = createContext({});
-export const Tab = ({ children, defaultAcitve }) => {
+export const Tab = ({ children, defaultAcitve, removeOnDeActive }) => {
   const [active, setActive] = useState(defaultAcitve);
   return (
-    <Context.Provider value={{ active, setActive }}>
+    <Context.Provider value={{ active, setActive, removeOnDeActive }}>
       {children}
     </Context.Provider>
   );
@@ -30,7 +30,8 @@ Tab.Title = ({ children, value }) => {
 };
 
 Tab.Content = ({ children, value }) => {
-  const { active } = useContext(Context);
+  const { active, removeOnDeActive } = useContext(Context);
+  if (removeOnDeActive && active !== value) return null;
   return (
     <div className={cn("tab-pane fade", { "show active": active === value })}>
       {children}

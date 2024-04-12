@@ -28,7 +28,7 @@ export default function OrderCard({
                 {/* Text */}
                 <Link
                   to={generatePath(PATH.Profile.OrderDetail, { id: _id })}
-                  className="mb-lg-0 font-size-sm font-weight-bold"
+                  className="text-[#111] mb-lg-0 font-size-sm font-weight-bold"
                 >
                   {_id}
                 </Link>

@@ -81,7 +81,7 @@ export const CartItem = ({
       })
     );
   };
-  const selected = !!listItems.find((e) => e === productId);
+  const selected = !!listItems?.find((e) => e === productId);
   return (
     <Spin spinning={_loading}>
       <li className={cn("list-group-item", props.className)}>
