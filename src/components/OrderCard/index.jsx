@@ -3,15 +3,48 @@ import moment from "moment";
 import { Button } from "../Button";
 import { generatePath, Link } from "react-router-dom";
 import { PATH } from "@/config";
+import Skeleton from "../Skeleton";
+import { withListLoading } from "@/utils/withListLoading";
+import { OrderStatus } from "../OrderStatus";
 
-export default function OrderCard({
-  status,
-  total,
-  _id,
-  createAt,
-  listItems,
-  finishedDate,
-}) {
+const Loading = () => {
+  return (
+    <div className="card card-lg mb-5 border">
+      <div className="card-body pb-0">
+        {/* Info */}
+        <div className="card card-sm">
+          <Skeleton height={98.49} />
+        </div>
+      </div>
+      <div className="card-footer">
+        <div className="row align-items-center">
+          <div className="col-12 col-lg-6">
+            <div className="form-row mb-4 mb-lg-0">
+              <div className="col-3">
+                <Skeleton className="embed-responsive embed-responsive-1by1 bg-cover" />
+              </div>
+              <div className="col-3">
+                <Skeleton className="embed-responsive embed-responsive-1by1 bg-cover" />
+              </div>
+              <div className="col-3">
+                <Skeleton className="embed-responsive embed-responsive-1by1 bg-cover" />
+              </div>
+            </div>
+          </div>
+          <div className="col-12 col-lg-6">
+            <div className="flex justify-end gap-3">
+              <Skeleton height={40} width={100} />
+              <Skeleton height={40} width={80} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const OrderCard = (props) => {
+  const { status, total, _id, createAt, listItems, finishedDate } = props;
   const checkReturn =
     status === "finished" && moment(finishedDate) > moment().add(-7, "d");
   const date = moment(status === "finsihed" ? finishedDate : createAt);
@@ -19,51 +52,7 @@ export default function OrderCard({
     <div className="card card-lg mb-5 border">
       <div className="card-body pb-0">
         {/* Info */}
-        <div className="card card-sm">
-          <div className="card-body bg-light">
-            <div className="row">
-              <div className="col-6 col-lg-3">
-                {/* Heading */}
-                <h6 className="heading-xxxs text-muted">MÃ ĐƠN HÀNG:</h6>
-                {/* Text */}
-                <Link
-                  to={generatePath(PATH.Profile.OrderDetail, { id: _id })}
-                  className="text-[#111] mb-lg-0 font-size-sm font-weight-bold"
-                >
-                  {_id}
-                </Link>
-              </div>
-              <div className="col-6 col-lg-3">
-                {/* Heading */}
-                <h6 className="heading-xxxs text-muted">
-                  {status === "finished" ? "Ngày giao hàng" : "Ngày tạo đơn"}:
-                </h6>
-                {/* Text */}
-                <p className="mb-lg-0 font-size-sm font-weight-bold">
-                  <time dateTime="2019-09-25">
-                    {date.format("DD MMM, YYYY")}
-                  </time>
-                </p>
-              </div>
-              <div className="col-6 col-lg-3">
-                {/* Heading */}
-                <h6 className="heading-xxxs text-muted">Trạng thái:</h6>
-                {/* Text */}
-                <p className="mb-0 font-size-sm font-weight-bold">
-                  Chờ xác nhận
-                </p>
-              </div>
-              <div className="col-6 col-lg-3">
-                {/* Heading */}
-                <h6 className="heading-xxxs text-muted">Tổng tiền:</h6>
-                {/* Text */}
-                <p className="mb-0 font-size-sm font-weight-bold">
-                  {currency(total)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <OrderStatus order={props} />
       </div>
       <div className="card-footer">
         <div className="row align-items-center">
@@ -117,11 +106,35 @@ export default function OrderCard({
               >
                 Xem chi tiết
               </a> */}
-              {checkReturn && <Button outline>Đổi trả</Button>}
+              {checkReturn && (
+                <Button className="btn-xs" outline>
+                  Đổi trả
+                </Button>
+              )}
+              {status === "pending" && (
+                <Button className="btn-xs" outline>
+                  Hủy đơn
+                </Button>
+              )}
+              {(status === "finished" || status === "cancel") && (
+                <Button className="btn-xs" outline>
+                  Mua lại
+                </Button>
+              )}
+              <Link
+                className="btn btn-xs btn-outline-dark"
+                to={generatePath(PATH.Profile.OrderDetail, {
+                  id: _id,
+                })}
+              >
+                Xem chi tiết
+              </Link>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export const ListOrderCard = withListLoading(OrderCard, Loading);

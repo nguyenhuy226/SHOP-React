@@ -1,11 +1,12 @@
 import { ListOrder } from "@/components/ListOrder";
-import OrderCard from "@/components/OrderCard";
 import { Tab } from "@/components/Tab";
 import { useQuery } from "@/hooks/useQuery";
+import { useSearch } from "@/hooks/useSearch";
 import { orderService } from "@/services/order";
 import { Badge } from "antd";
 
 export default function Order() {
+  const [, setSearch] = useSearch();
   const { data: pendingCount } = useQuery({
     queryFn: () => orderService.getCount("?status=pending"),
   });
@@ -16,7 +17,11 @@ export default function Order() {
     queryFn: () => orderService.getCount("?status=shipping"),
   });
   return (
-    <Tab defaultAcitve="all" removeOnDeActive>
+    <Tab
+      defaultAcitve="all"
+      removeOnDeActive
+      onChange={() => setSearch({ page: 1 })}
+    >
       <div className="nav mb-10">
         <Tab.Title value="all">Tất cả đơn</Tab.Title>
         <Badge count={pendingCount?.count}>
@@ -46,61 +51,11 @@ export default function Order() {
         </Tab.Content>
         <Tab.Content value="finished">
           <ListOrder status="finished" />
-
-          {/* <div className="flex items-center flex-col gap-5 text-center">
-            <img width={200} src="/img/empty-order.png" alt />
-            <p>Chưa có đơn hàng nào</p>
-          </div> */}
         </Tab.Content>
         <Tab.Content value="cancel">
           <ListOrder status="cancel" />
         </Tab.Content>
       </div>
-      {/* Pagination */}
-      <nav className="d-flex justify-content-center justify-content-md-end mt-10">
-        <ul className="pagination pagination-sm text-gray-400">
-          <li className="page-item">
-            <a className="page-link page-link-arrow" href="#">
-              <i className="fa fa-caret-left" />
-            </a>
-          </li>
-          <li className="page-item active">
-            <a className="page-link" href="#">
-              1
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              2
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              3
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              4
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              5
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              6
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link page-link-arrow" href="#">
-              <i className="fa fa-caret-right" />
-            </a>
-          </li>
-        </ul>
-      </nav>
     </Tab>
   );
 }
