@@ -1,17 +1,17 @@
 import { PATH } from "@/config";
 import { useAction } from "@/hooks/useAction";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 import { useCategory } from "@/hooks/useCategories";
 import { productService } from "@/services/product";
 import { updateCartItemAction } from "@/stories/cart";
 import { currency } from "@/utils";
 import { withListLoading } from "@/utils/withListLoading";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Popconfirm } from "../Popcomfirm";
 import { Rating } from "../Rating";
 import Skeleton from "../Skeleton";
-import { useCart } from "@/hooks/useCart";
 export default function ProductCard({
   images,
   name,
@@ -116,10 +116,10 @@ export default function ProductCard({
         {/* Image */}
         <div className="card-img">
           {/* Image */}
-          <a className="card-img-hover" href="product.html">
+          <Link className="card-img-hover" to={`/${slug}`}>
             <img className="card-img-top card-img-back" src={img1} alt="..." />
             <img className="card-img-top card-img-front" src={img2} alt="..." />
-          </a>
+          </Link>
           {/* Actions */}
           <div className="card-actions">
             <span className="card-action"></span>

@@ -22,13 +22,24 @@ export function* fetchCartItem(action) {
     yield delay(300);
     if (action.payload.quantity >= 1) {
       // muốn gọi api, thực thi 1 promise trong generator function thì phải dùng call
+      yield put(
+        cartActions.toggleProductLoading({
+          productId: action.payload.productId,
+          loading: true,
+        })
+      );
       yield call(
         cartService.addItem,
         action.payload.productId,
         action.payload.quantity
       );
       // thunkApi.dispatch(getCartAction());
-
+      yield put(
+        cartActions.toggleProductLoading({
+          productId: action.payload.productId,
+          loading: false,
+        })
+      );
       yield put(getCartAction()); // put trong saga cũng giống như dispatch giống khi dùng thunkapi.dispatch
       if (action.payload.showPopover) {
         yield put(cartActions.togglePopover(true));
