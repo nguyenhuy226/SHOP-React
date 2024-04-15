@@ -186,7 +186,7 @@ export const OrderDetail = () => {
                   </div>
                   <div className="col">
                     {/* Title */}
-                    <p className="mb-4 font-size-sm font-weight-bold">
+                    <p className="mb-4 font-size-sm font-weight-bold pr-[140px]">
                       <a className="text-body" href="product.html">
                         {e.product.name} x {e.quantity}
                       </a>{" "}
@@ -195,7 +195,7 @@ export const OrderDetail = () => {
                         {currency(e.product.real_price)}
                       </span>
                     </p>
-                    <div className="card-right-info flex gap-2">
+                    <div className="card-right-info flex gap-2 flex-col">
                       {checkReturn && (
                         <Button className="btn-xs" outline>
                           Đổi trả
@@ -210,6 +210,15 @@ export const OrderDetail = () => {
                         <Button className="btn-xs" outline>
                           Mua lại
                         </Button>
+                      )}
+                      {status === "finished" && !e.review && (
+                        <Link
+                          to={`/${e.product.slug}`}
+                          state={{ orderId: detail.data._id }}
+                          className="btn btn-xs btn-block btn-outline-dark"
+                        >
+                          Viết Review
+                        </Link>
                       )}
                     </div>
                   </div>

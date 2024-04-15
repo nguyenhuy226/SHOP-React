@@ -304,7 +304,7 @@ export default function Header() {
                       {
                         key: 1,
                         label: (
-                          <Link to={PATH.Profile.Oder}>Đơn hàng của tôi</Link>
+                          <Link to={PATH.Profile.Order}>Đơn hàng của tôi</Link>
                         ),
                       },
                       {

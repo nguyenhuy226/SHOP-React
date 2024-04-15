@@ -1,6 +1,9 @@
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Button } from "@/components/Button";
+import Field from "@/components/Field";
+import Paginate from "@/components/Paginate";
 import { Rating } from "@/components/Rating";
+import { ListReview } from "@/components/ReviewItem";
 import { ShortContent } from "@/components/ShortContent";
 import { Tab } from "@/components/Tab";
 import { PATH } from "@/config";
@@ -8,16 +11,19 @@ import { useAction } from "@/hooks/useAction";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { useCategory } from "@/hooks/useCategories";
+import { useForm } from "@/hooks/useForm";
 import { useQuery } from "@/hooks/useQuery";
 import { productService } from "@/services/product";
+import { reviewService } from "@/services/review";
 import { updateCartItemAction } from "@/stories/cart";
-import { currency } from "@/utils";
+import { currency, handleError, required } from "@/utils";
 import { message, Image } from "antd";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function ProductDetailPage() {
+  const [star, setStar] = useState(5);
   const { slug } = useParams();
   const [, id] = slug.split("-p");
   const navigate = useNavigate();
@@ -27,7 +33,16 @@ export default function ProductDetailPage() {
   const { cart, loading: productLoading } = useCart();
   const { user } = useAuth();
   const _addCartLoading = productLoading[id];
+  const { state } = useLocation();
 
+  const { reFetch: reviewAction, loading: reviewLoading } = useQuery({
+    enable: false,
+    queryFn: ({ params }) => reviewService.addReview(...params),
+  });
+
+  const reviewForm = useForm({
+    content: [required()],
+  });
   const { data: detail, loading } = useQuery({
     queryFn: () => productService.getProductDetail(id),
     enable: !!id,
@@ -36,6 +51,15 @@ export default function ProductDetailPage() {
       navigate(PATH.Product);
     },
   });
+
+  const {
+    data: reivews,
+    loading: listReivewLoading,
+    reFetch: reFetchReview,
+  } = useQuery({
+    queryFn: () => reviewService.getReview(id),
+  });
+  console.log(reivews);
 
   const category = useCategory(detail?.data?.categories);
   const onAddWishlist = useAction({
@@ -65,6 +89,25 @@ export default function ProductDetailPage() {
       );
     } else {
       navigate(PATH.Account);
+    }
+  };
+
+  const onSubmitReview = async () => {
+    try {
+      if (reviewForm.validate()) {
+        await reviewAction(product.id, {
+          orderId: state.orderId,
+          content: reviewForm.values.content,
+          star: star,
+        });
+        message.success("Viết đánh giá sản phẩm thành công");
+        navigate(window.location.pathname + window.location.search, {
+          replace: true,
+        }); // replace là không lưu lần chuyển trang này vào history
+        reFetchReview();
+      }
+    } catch (error) {
+      handleError(error);
     }
   };
   return (
@@ -148,7 +191,7 @@ export default function ProductDetailPage() {
                           <div
                             className="embed-responsive embed-responsive-1by1 bg-cover"
                             style={{
-                              backgroundImage: `url(${product.images[5].thumbnail_url})`,
+                              backgroundImage: `url(${product.images[5]?.thumbnail_url})`,
                             }}
                           />
                         </div>
@@ -402,14 +445,13 @@ export default function ProductDetailPage() {
           <div className="container">
             <div className="row">
               <div className="col-12">
-                {/* Heading */}
                 <h4 className="mb-10 text-center">Customer Reviews</h4>
-                {/* New Review */}
-                <div className="mb-10">
-                  {/* Divider */}
-                  <hr className="my-8" />
-                  {/* Form */}
-                  <form>
+                {state?.orderId && (
+                  <div className="mb-10">
+                    {/* Divider */}
+                    <hr className="my-8" />
+                    {/* Form */}
+
                     <div className="row">
                       <div className="col-12 mb-6 text-center">
                         {/* Text */}
@@ -417,29 +459,40 @@ export default function ProductDetailPage() {
                         {/* Rating form */}
                         <div className="rating-form">
                           {/* Input */}
-                          <input
-                            className="rating-input"
-                            type="range"
-                            min={1}
-                            max={5}
-                            defaultValue={5}
-                          />
                           {/* Rating */}
-                          <div className="rating h5 text-dark" data-value={5}>
-                            <div className="rating-item">
-                              <i className="fas fa-star" />
+                          <div
+                            className="rating h5 text-dark"
+                            data-value={star}
+                          >
+                            <div className="rating-item cursor-pointer">
+                              <i
+                                className="fas fa-star"
+                                onClick={() => setStar(1)}
+                              />
                             </div>
-                            <div className="rating-item">
-                              <i className="fas fa-star" />
+                            <div className="rating-item cursor-pointer">
+                              <i
+                                className="fas fa-star"
+                                onClick={() => setStar(2)}
+                              />
                             </div>
-                            <div className="rating-item">
-                              <i className="fas fa-star" />
+                            <div className="rating-item cursor-pointer">
+                              <i
+                                className="fas fa-star"
+                                onClick={() => setStar(3)}
+                              />
                             </div>
-                            <div className="rating-item">
-                              <i className="fas fa-star" />
+                            <div className="rating-item cursor-pointer">
+                              <i
+                                className="fas fa-star"
+                                onClick={() => setStar(4)}
+                              />
                             </div>
-                            <div className="rating-item">
-                              <i className="fas fa-star" />
+                            <div className="rating-item cursor-pointer">
+                              <i
+                                className="fas fa-star"
+                                onClick={() => setStar(5)}
+                              />
                             </div>
                           </div>
                         </div>
@@ -447,34 +500,41 @@ export default function ProductDetailPage() {
                       <div className="col-12">
                         {/* Name */}
                         <div className="form-group">
-                          <label className="sr-only" htmlFor="reviewText">
-                            Review:
-                          </label>
-                          <textarea
-                            className="form-control form-control-sm"
-                            id="reviewText"
-                            rows={5}
-                            placeholder="Review *"
-                            required
-                            defaultValue={""}
+                          <Field
+                            {...reviewForm.register("content")}
+                            label="Review:"
+                            renderField={(props) => (
+                              <textarea
+                                {...props}
+                                onChange={(ev) =>
+                                  props?.onChange(ev.target.value)
+                                }
+                                className="form-control form-control-sm"
+                                rows={5}
+                                placeholder="Review *"
+                              />
+                            )}
                           />
                         </div>
                       </div>
-                      <div className="col-12 text-center">
+                      <div className="col-12 text-center flex justify-center">
                         {/* Button */}
-                        <button className="btn btn-outline-dark" type="submit">
+                        <Button
+                          loading={reviewLoading}
+                          outline
+                          onClick={onSubmitReview}
+                        >
                           Post Review
-                        </button>
+                        </Button>
                       </div>
                     </div>
-                  </form>
-                </div>
+                  </div>
+                )}
+
                 {/* Header */}
                 <div className="row align-items-center">
-                  <div className="col-12 col-md-auto">
-                    {/* Dropdown */}
+                  {/* <div className="col-12 col-md-auto">
                     <div className="dropdown mb-4 mb-md-0">
-                      {/* Toggle */}
                       <a
                         className="dropdown-toggle text-reset"
                         data-toggle="dropdown"
@@ -482,7 +542,7 @@ export default function ProductDetailPage() {
                       >
                         <strong>Sort by: Newest</strong>
                       </a>
-                      {/* Menu */}
+
                       <div className="dropdown-menu mt-3">
                         <a className="dropdown-item" href="#!">
                           Newest
@@ -492,10 +552,10 @@ export default function ProductDetailPage() {
                         </a>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="col-12 col-md text-md-right">
                     {/* Rating */}
-                    <div
+                    {/* <div
                       className="rating text-dark h6 mb-4 mb-md-0"
                       data-value={4}
                     >
@@ -514,166 +574,22 @@ export default function ProductDetailPage() {
                       <div className="rating-item">
                         <i className="fas fa-star" />
                       </div>
-                    </div>
+                    </div> */}
                     {/* Count */}
-                    <strong className="font-size-sm ml-2">Reviews (3)</strong>
+                    <strong className="font-size-sm ml-2">
+                      Reviews ({reivews?.paginate?.count})
+                    </strong>
                   </div>
                 </div>
                 {/* Reviews */}
                 <div className="mt-8">
-                  {/* Review */}
-                  <div className="review">
-                    <div className="review-body">
-                      <div className="row">
-                        <div className="col-12 col-md-auto">
-                          {/* Avatar */}
-                          <div className="avatar avatar-xxl mb-6 mb-md-0">
-                            <span className="avatar-title rounded-circle">
-                              <i className="fa fa-user" />
-                            </span>
-                          </div>
-                        </div>
-                        <div className="col-12 col-md">
-                          {/* Header */}
-                          <div className="row mb-6">
-                            <div className="col-12">
-                              {/* Rating */}
-                              <div
-                                className="rating font-size-sm text-dark"
-                                data-value={5}
-                              >
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="col-12">
-                              {/* Time */}
-                              <span className="font-size-xs text-muted">
-                                Logan Edwards,{" "}
-                                <time dateTime="2019-07-25">25 Jul 2019</time>
-                              </span>
-                            </div>
-                          </div>
-                          {/* Title */}
-                          <p className="mb-2 font-size-lg font-weight-bold">
-                            So cute!
-                          </p>
-                          {/* Text */}
-                          <p className="text-gray-500">
-                            Justo ut diam erat hendrerit. Morbi porttitor, per
-                            eu. Sodales curabitur diam sociis. Taciti lobortis
-                            nascetur. Ante laoreet odio hendrerit. Dictumst
-                            curabitur nascetur lectus potenti dis sollicitudin
-                            habitant quis vestibulum.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Review */}
-                  <div className="review">
-                    {/* Body */}
-                    <div className="review-body">
-                      <div className="row">
-                        <div className="col-12 col-md-auto">
-                          {/* Avatar */}
-                          <div className="avatar avatar-xxl mb-6 mb-md-0">
-                            <span className="avatar-title rounded-circle">
-                              <i className="fa fa-user" />
-                            </span>
-                          </div>
-                        </div>
-                        <div className="col-12 col-md">
-                          {/* Header */}
-                          <div className="row mb-6">
-                            <div className="col-12">
-                              {/* Rating */}
-                              <div
-                                className="rating font-size-sm text-dark"
-                                data-value={3}
-                              >
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                                <div className="rating-item">
-                                  <i className="fas fa-star" />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="col-12">
-                              {/* Time */}
-                              <span className="font-size-xs text-muted">
-                                Sophie Casey,{" "}
-                                <time dateTime="2019-07-07">07 Jul 2019</time>
-                              </span>
-                            </div>
-                          </div>
-                          {/* Title */}
-                          <p className="mb-2 font-size-lg font-weight-bold">
-                            Cute, but too small
-                          </p>
-                          {/* Text */}
-                          <p className="text-gray-500">
-                            Shall good midst can't. Have fill own his multiply
-                            the divided. Thing great. Of heaven whose signs.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <ListReview
+                    loading={listReivewLoading}
+                    data={reivews?.data}
+                    loadingCount={5}
+                  />
                 </div>
-                {/* Pagination */}
-                <nav className="d-flex justify-content-center mt-9">
-                  <ul className="pagination pagination-sm text-gray-400">
-                    <li className="page-item">
-                      <a className="page-link page-link-arrow" href="#">
-                        <i className="fa fa-caret-left" />
-                      </a>
-                    </li>
-                    <li className="page-item active">
-                      <a className="page-link" href="#">
-                        1
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        2
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        3
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link page-link-arrow" href="#">
-                        <i className="fa fa-caret-right" />
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
+                <Paginate totalPage={reivews?.paginate?.totalPage} />
               </div>
             </div>
           </div>
