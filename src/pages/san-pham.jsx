@@ -13,7 +13,7 @@ import { cn, slugify } from "@/utils";
 import queryString from "query-string";
 import { useState } from "react";
 import { Link, generatePath, useParams } from "react-router-dom";
-
+import { Slider } from "@/components/Slider";
 export default function ProductPage() {
   const { id } = useParams();
 
@@ -441,11 +441,9 @@ export default function ProductPage() {
           </div>
           <div className="col-12 col-md-8 col-lg-9">
             {/* Slider */}
-            <div
-              className="flickity-page-dots-inner mb-9"
-              data-flickity='{"pageDots": true}'
-            >
+            <Slider>
               {/* Item */}
+
               <div className="w-100">
                 <div
                   className="card bg-h-100 bg-left"
@@ -475,6 +473,7 @@ export default function ProductPage() {
                   </div>
                 </div>
               </div>
+
               {/* Item */}
               <div className="w-100">
                 <div
@@ -507,6 +506,7 @@ export default function ProductPage() {
                   </div>
                 </div>
               </div>
+
               {/* Item */}
               <div className="w-100">
                 <div
@@ -535,7 +535,7 @@ export default function ProductPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Slider>
             {/* Header */}
             <div className="row align-items-center mb-7">
               <div className="col-12 col-md">

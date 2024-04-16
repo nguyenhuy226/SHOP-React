@@ -133,15 +133,16 @@ import { authActions, loginSuccessAction } from ".";
 
 export function* fetchLogin(action) {
   try {
-    const res = yield call(authService.login, action.payload);
+    const res = yield call(authService.login, action.payload.data);
     setToken(res.data);
     const user = yield call(userService.getUser);
     setUser(user.data);
     yield put(loginSuccessAction());
     yield put(authActions.setUser(user.data));
+    action.payload?.onSuccess(user.data);
   } catch (error) {
     console.log(error);
-    handleError(error);
+    action.payload?.onError(error);
   }
 }
 

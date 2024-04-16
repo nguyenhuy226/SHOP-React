@@ -12,6 +12,13 @@ import { CartDrawer } from "../CartDrawer";
 import { CheckCircleFilled } from "@ant-design/icons";
 import { Button } from "../Button";
 import { cartActions } from "@/stories/cart";
+import { useTranslate } from "../TranslateProvider";
+
+const LANG = {
+  en: "English",
+  vi: "Tiengs Việt",
+  china: "Tiếng Trung",
+};
 
 export default function Header() {
   const [onpenSearchDrawer, setOpenSearchDrawer] = useState(false);
@@ -19,6 +26,8 @@ export default function Header() {
   const { user } = useAuth();
   const { cart, openCartOver } = useCart();
   const dispatch = useDispatch();
+  const { t, setLang, lang } = useTranslate();
+
   return (
     <>
       <SearchDrawer
@@ -116,25 +125,35 @@ export default function Header() {
               </li>
               <li className="nav-item dropdown">
                 {/* Toggle */}
-                <a
-                  className="nav-link dropdown-toggle"
-                  data-toggle="dropdown"
-                  href="#"
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: 1,
+                        label: "English",
+                        onClick: () => setLang("en"),
+                      },
+                      {
+                        key: 2,
+                        label: "Tiếng Việt",
+                        onClick: () => setLang("vi"),
+                      },
+                      {
+                        key: 3,
+                        label: "Tiếng Trung",
+                        onClick: () => setLang("china"),
+                      },
+                    ],
+                  }}
                 >
-                  English
-                </a>
-                {/* Menu */}
-                <div className="dropdown-menu minw-0">
-                  <a className="dropdown-item" href="#">
-                    English
+                  <a
+                    className="nav-link dropdown-toggle"
+                    data-toggle="dropdown"
+                    href="#"
+                  >
+                    {LANG[lang]}
                   </a>
-                  <a className="dropdown-item" href="#">
-                    Tiếng Việt
-                  </a>
-                  <a className="dropdown-item" href="#">
-                    China
-                  </a>
-                </div>
+                </Dropdown>
               </li>
             </ul>
             {/* Nav */}
@@ -207,17 +226,17 @@ export default function Header() {
             <ul className="navbar-nav mx-auto">
               <li className="nav-item">
                 <Link className="nav-link" to={PATH.Home}>
-                  Trang chủ
+                  {t("Home")}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to={PATH.Product}>
-                  Sản phẩm
+                  {t("Product")}
                 </Link>
               </li>
               <li className="nav-item dropdown">
                 <a className="nav-link" href="./shop.html">
-                  Laptop
+                  {t("Laptop")}
                 </a>
               </li>
               <li className="nav-item dropdown">

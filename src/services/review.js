@@ -6,6 +6,6 @@ export const reviewService = {
     return http.post(`${REVIEW_API}/${productId}`, data);
   },
   getReview(productId) {
-    return http.get(`${REVIEW_API}/${productId}`);
+    return http.get(`${REVIEW_API}/${productId}?limit=10`);
   },
 };

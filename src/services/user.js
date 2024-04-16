@@ -14,6 +14,12 @@ export const userService = {
   changePassword(data) {
     return http.post(`${USER_API}/change-password`, data);
   },
+  resetPassword(data) {
+    return http.post(`${USER_API}/reset-password`, data);
+  },
+  resetPasswordByCode(data) {
+    return http.post(`${USER_API}/change-password-by-code`, data);
+  },
 
   getAddress(query = "") {
     return http.get(`${USER_API}/address${query}`);

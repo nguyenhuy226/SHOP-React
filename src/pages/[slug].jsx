@@ -1,5 +1,6 @@
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Button } from "@/components/Button";
+import { ErrorBoundary } from "@/components/ErrorBoundaries";
 import Field from "@/components/Field";
 import Paginate from "@/components/Paginate";
 import { Rating } from "@/components/Rating";
@@ -443,97 +444,98 @@ export default function ProductDetailPage() {
         {/* REVIEWS */}
         <section className="pt-9 pb-11" id="reviews">
           <div className="container">
-            <div className="row">
-              <div className="col-12">
-                <h4 className="mb-10 text-center">Customer Reviews</h4>
-                {state?.orderId && (
-                  <div className="mb-10">
-                    {/* Divider */}
-                    <hr className="my-8" />
-                    {/* Form */}
+            <ErrorBoundary>
+              <div className="row">
+                <div className="col-12">
+                  <h4 className="mb-10 text-center">Customer Reviews</h4>
+                  {state?.orderId && (
+                    <div className="mb-10">
+                      {/* Divider */}
+                      <hr className="my-8" />
+                      {/* Form */}
 
-                    <div className="row">
-                      <div className="col-12 mb-6 text-center">
-                        {/* Text */}
-                        <p className="mb-1 font-size-xs">Score:</p>
-                        {/* Rating form */}
-                        <div className="rating-form">
-                          {/* Input */}
-                          {/* Rating */}
-                          <div
-                            className="rating h5 text-dark"
-                            data-value={star}
-                          >
-                            <div className="rating-item cursor-pointer">
-                              <i
-                                className="fas fa-star"
-                                onClick={() => setStar(1)}
-                              />
-                            </div>
-                            <div className="rating-item cursor-pointer">
-                              <i
-                                className="fas fa-star"
-                                onClick={() => setStar(2)}
-                              />
-                            </div>
-                            <div className="rating-item cursor-pointer">
-                              <i
-                                className="fas fa-star"
-                                onClick={() => setStar(3)}
-                              />
-                            </div>
-                            <div className="rating-item cursor-pointer">
-                              <i
-                                className="fas fa-star"
-                                onClick={() => setStar(4)}
-                              />
-                            </div>
-                            <div className="rating-item cursor-pointer">
-                              <i
-                                className="fas fa-star"
-                                onClick={() => setStar(5)}
-                              />
+                      <div className="row">
+                        <div className="col-12 mb-6 text-center">
+                          {/* Text */}
+                          <p className="mb-1 font-size-xs">Score:</p>
+                          {/* Rating form */}
+                          <div className="rating-form">
+                            {/* Input */}
+                            {/* Rating */}
+                            <div
+                              className="rating h5 text-dark"
+                              data-value={star}
+                            >
+                              <div className="rating-item cursor-pointer">
+                                <i
+                                  className="fas fa-star"
+                                  onClick={() => setStar(1)}
+                                />
+                              </div>
+                              <div className="rating-item cursor-pointer">
+                                <i
+                                  className="fas fa-star"
+                                  onClick={() => setStar(2)}
+                                />
+                              </div>
+                              <div className="rating-item cursor-pointer">
+                                <i
+                                  className="fas fa-star"
+                                  onClick={() => setStar(3)}
+                                />
+                              </div>
+                              <div className="rating-item cursor-pointer">
+                                <i
+                                  className="fas fa-star"
+                                  onClick={() => setStar(4)}
+                                />
+                              </div>
+                              <div className="rating-item cursor-pointer">
+                                <i
+                                  className="fas fa-star"
+                                  onClick={() => setStar(5)}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="col-12">
-                        {/* Name */}
-                        <div className="form-group">
-                          <Field
-                            {...reviewForm.register("content")}
-                            label="Review:"
-                            renderField={(props) => (
-                              <textarea
-                                {...props}
-                                onChange={(ev) =>
-                                  props?.onChange(ev.target.value)
-                                }
-                                className="form-control form-control-sm"
-                                rows={5}
-                                placeholder="Review *"
-                              />
-                            )}
-                          />
+                        <div className="col-12">
+                          {/* Name */}
+                          <div className="form-group">
+                            <Field
+                              {...reviewForm.register("content")}
+                              label="Review:"
+                              renderField={(props) => (
+                                <textarea
+                                  {...props}
+                                  onChange={(ev) =>
+                                    props?.onChange(ev.target.value)
+                                  }
+                                  className="form-control form-control-sm"
+                                  rows={5}
+                                  placeholder="Review *"
+                                />
+                              )}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-12 text-center flex justify-center">
+                          {/* Button */}
+                          <Button
+                            loading={reviewLoading}
+                            outline
+                            onClick={onSubmitReview}
+                          >
+                            Post Review
+                          </Button>
                         </div>
                       </div>
-                      <div className="col-12 text-center flex justify-center">
-                        {/* Button */}
-                        <Button
-                          loading={reviewLoading}
-                          outline
-                          onClick={onSubmitReview}
-                        >
-                          Post Review
-                        </Button>
-                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Header */}
-                <div className="row align-items-center">
-                  {/* <div className="col-12 col-md-auto">
+                  {/* Header */}
+                  <div className="row align-items-center">
+                    {/* <div className="col-12 col-md-auto">
                     <div className="dropdown mb-4 mb-md-0">
                       <a
                         className="dropdown-toggle text-reset"
@@ -553,9 +555,9 @@ export default function ProductDetailPage() {
                       </div>
                     </div>
                   </div> */}
-                  <div className="col-12 col-md text-md-right">
-                    {/* Rating */}
-                    {/* <div
+                    <div className="col-12 col-md text-md-right">
+                      {/* Rating */}
+                      {/* <div
                       className="rating text-dark h6 mb-4 mb-md-0"
                       data-value={4}
                     >
@@ -575,23 +577,24 @@ export default function ProductDetailPage() {
                         <i className="fas fa-star" />
                       </div>
                     </div> */}
-                    {/* Count */}
-                    <strong className="font-size-sm ml-2">
-                      Reviews ({reivews?.paginate?.count})
-                    </strong>
+                      {/* Count */}
+                      <strong className="font-size-sm ml-2">
+                        Reviews ({reivews?.paginate?.count})
+                      </strong>
+                    </div>
                   </div>
+                  {/* Reviews */}
+                  <div className="mt-8">
+                    <ListReview
+                      loading={listReivewLoading}
+                      data={reivews?.data}
+                      loadingCount={5}
+                    />
+                  </div>
+                  <Paginate totalPage={reivews?.paginate?.totalPage} />
                 </div>
-                {/* Reviews */}
-                <div className="mt-8">
-                  <ListReview
-                    loading={listReivewLoading}
-                    data={reivews?.data}
-                    loadingCount={5}
-                  />
-                </div>
-                <Paginate totalPage={reivews?.paginate?.totalPage} />
               </div>
-            </div>
+            </ErrorBoundary>
           </div>
         </section>
         {/* FEATURES */}

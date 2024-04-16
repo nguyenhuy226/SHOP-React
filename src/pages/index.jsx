@@ -1,3 +1,4 @@
+import { Slider } from "@/components/Slider";
 import React from "react";
 
 export default function HomePage() {
@@ -938,8 +939,8 @@ export default function HomePage() {
             <div className="row">
               <div className="col-12">
                 {/* Slider */}
-                <div data-flickity='{"pageDots": true}'>
-                  <div className="col-12 col-sm-8 col-md-6 col-lg-4">
+                <Slider sliderPerView={3} spaceBetween={30}>
+                  <div className="">
                     {/* Card */}
                     <div className="card-lg card border">
                       <div className="card-body">
@@ -1006,7 +1007,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-12 col-sm-8 col-md-6 col-lg-4">
+                  <div className="">
                     {/* Card */}
                     <div className="card-lg card border">
                       <div className="card-body">
@@ -1075,7 +1076,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-12 col-sm-8 col-md-6 col-lg-4">
+                  <div className="">
                     {/* Card */}
                     <div className="card-lg card border">
                       <div className="card-body">
@@ -1142,7 +1143,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-12 col-sm-8 col-md-6 col-lg-4">
+                  <div className="">
                     {/* Card */}
                     <div className="card-lg card border">
                       <div className="card-body">
@@ -1210,7 +1211,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Slider>
               </div>
             </div>
           </div>

@@ -11,6 +11,7 @@ import Account from "@/pages/tai-khoan";
 import ViewCart from "@/pages/gio-hang";
 import Checkout from "@/pages/checkout";
 import OrderComplete from "@/pages/dat-hang-thanh-cong";
+import { ResetPassword } from "@/pages/reset-pssword";
 
 export const routes = [
   {
@@ -36,6 +37,7 @@ export const routes = [
         element: <ProductPage />,
         path: PATH.Product,
       },
+
       {
         element: <ProductPage />,
         path: PATH.Category,
@@ -51,11 +53,14 @@ export const routes = [
       },
       {
         element: <GuestRouter redirect={PATH.Profile.Index} />,
-        path: PATH.Account,
         children: [
           {
             element: <Account />,
-            index: true,
+            path: PATH.Account,
+          },
+          {
+            element: <ResetPassword />,
+            path: PATH.ResetPassword,
           },
         ],
       },

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const FieldStyle = styled.div`
+  text-align: left;
   &.error {
     .form-control {
       border-color: red;
