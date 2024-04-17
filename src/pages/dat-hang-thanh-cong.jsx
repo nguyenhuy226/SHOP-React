@@ -1,5 +1,6 @@
 import { PATH } from "@/config";
 import React, { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { generatePath, Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function OrderComplete() {
@@ -10,6 +11,9 @@ export default function OrderComplete() {
   }, [state]);
   return (
     <section className="py-12">
+      <Helmet>
+        <title>Đặt hàng thành công</title>
+      </Helmet>
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-md-10 col-lg-8 col-xl-6 text-center">

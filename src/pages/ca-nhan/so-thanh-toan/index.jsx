@@ -4,6 +4,7 @@ import { PATH } from "@/config";
 import { useQuery } from "@/hooks/useQuery";
 import { userService } from "@/services/user";
 import React from "react";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
 export default function Payment() {
@@ -16,6 +17,9 @@ export default function Payment() {
 
   return (
     <div className="row">
+      <Helmet>
+        <title>Sổ thanh toán</title>
+      </Helmet>
       <ListPaymentCard
         data={data?.data}
         loading={!data?.data && loading}

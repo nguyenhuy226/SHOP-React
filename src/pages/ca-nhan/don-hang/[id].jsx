@@ -7,7 +7,7 @@ import { orderService } from "@/services/order";
 import { currency } from "@/utils";
 import { message } from "antd";
 import moment from "moment";
-import { generatePath, Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const SHIPPING = {
   "giao-hang-nhanh": "Giao hàng nhanh",
@@ -187,9 +187,9 @@ export const OrderDetail = () => {
                   <div className="col">
                     {/* Title */}
                     <p className="mb-4 font-size-sm font-weight-bold pr-[140px]">
-                      <a className="text-body" href="product.html">
+                      <Link className="text-body" to={`/${e.product.slug}`}>
                         {e.product.name} x {e.quantity}
-                      </a>{" "}
+                      </Link>{" "}
                       <br />
                       <span className="text-muted">
                         {currency(e.product.real_price)}

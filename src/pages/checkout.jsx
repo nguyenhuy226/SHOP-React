@@ -14,6 +14,7 @@ import { cartActions } from "@/stories/cart";
 import { currency, regexp, required, storeAddressSelect } from "@/utils";
 import { Spin } from "antd";
 import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -104,6 +105,9 @@ export default function Checkout() {
           storeAddressSelect.set(address);
         }}
       />
+      <Helmet>
+        <title>Checkout</title>
+      </Helmet>
       <div>
         <section className="pt-7 pb-12">
           <div className="container">

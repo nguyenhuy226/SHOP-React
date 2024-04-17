@@ -9,6 +9,7 @@ import { addPromotionAction, removePromotionAction } from "@/stories/cart";
 import { cn, currency, handleError, required } from "@/utils";
 import { message, Spin } from "antd";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -60,6 +61,9 @@ export default function ViewCart() {
   const { promotion } = preCheckoutResponse;
   return (
     <>
+      <Helmet>
+        <title>Giỏ Hàng</title>
+      </Helmet>
       <div>
         <section className="pt-7 pb-12">
           {cart?.listItems.length > 0 ? (

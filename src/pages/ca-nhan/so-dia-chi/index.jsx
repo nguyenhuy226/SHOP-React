@@ -4,6 +4,7 @@ import { PATH, PROFILE_TITLE_ID } from "@/config";
 import { useQuery } from "@/hooks/useQuery";
 import { userService } from "@/services/user";
 import React from "react";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
 export default function Address() {
@@ -16,6 +17,9 @@ export default function Address() {
 
   return (
     <div className="row">
+      <Helmet>
+        <title>Sổ địa chỉ</title>
+      </Helmet>
       <Portal selector={PROFILE_TITLE_ID}>Sổ địa chỉ</Portal>
       {/* {loading
         ? Array.from(Array(3)).map((_, i) => <AddressCard key={i} loading />)

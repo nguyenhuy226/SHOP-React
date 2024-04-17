@@ -9,6 +9,7 @@ export const Tab = ({
   removeOnDeActive,
   onChange,
   name = "tab",
+  onSearchChange,
 }) => {
   const [search] = useSearchParams();
 
@@ -20,7 +21,15 @@ export const Tab = ({
   };
 
   return (
-    <Context.Provider value={{ active, setActive, removeOnDeActive, name }}>
+    <Context.Provider
+      value={{
+        active: search.get(name) || defaultAcitve,
+        setActive,
+        removeOnDeActive,
+        name,
+        onSearchChange,
+      }}
+    >
       {children}
     </Context.Provider>
   );
@@ -29,17 +38,21 @@ export const Tab = ({
 Tab.Title = ({ children, value }) => {
   const { pathname } = useLocation();
   const [search, setSearch] = useSearchParams();
-  const { active, setActive, name } = useContext(Context);
+  const { active, setActive, name, onSearchChange } = useContext(Context);
 
   const link = `${pathname}?${name}=${value}`;
   const onClick = (ev) => {
     ev.preventDefault();
     setActive?.(value);
-    setSearch((search) => {
-      const _search = new URLSearchParams(search);
-      _search.set(name, value);
-      return _search;
-    });
+    setSearch(
+      (search) => {
+        const _search = new URLSearchParams(search);
+        _search.set(name, value);
+        onSearchChange?.(_search);
+        return _search;
+      },
+      { replace: true }
+    ); // không đưa sự thay đổi cửa setSearch này vào history
   };
   return (
     <a

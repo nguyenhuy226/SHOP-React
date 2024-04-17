@@ -10,6 +10,9 @@ import {
 } from "@/utils";
 import { call, put } from "redux-saga/effects";
 import { authActions, loginSuccessAction } from ".";
+import { message } from "antd";
+import { t } from "@/components/TranslateProvider";
+import { AUTH_MESSAGE } from "@/config/message";
 
 // export const loginAction = createAsyncThunk(
 //   "auth/login",
@@ -133,6 +136,7 @@ import { authActions, loginSuccessAction } from ".";
 
 export function* fetchLogin(action) {
   try {
+    yield put(authActions.toogleLoading(true));
     const res = yield call(authService.login, action.payload.data);
     setToken(res.data);
     const user = yield call(userService.getUser);
@@ -143,6 +147,8 @@ export function* fetchLogin(action) {
   } catch (error) {
     console.log(error);
     action.payload?.onError(error);
+  } finally {
+    yield put(authActions.toogleLoading(false));
   }
 }
 
@@ -151,6 +157,7 @@ export function* logout() {
   // yield put(cartActions.setCart(null));
   clearUser();
   clearToken();
+  message.success(t(AUTH_MESSAGE.LOGOUT_SUCCESS));
 }
 
 export function* fetchGetUser() {

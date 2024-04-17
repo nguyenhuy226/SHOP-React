@@ -159,19 +159,19 @@ export default function Header() {
             {/* Nav */}
             <ul className="nav navbar-nav mr-8">
               <li className="nav-item">
-                <a className="nav-link" href="./shipping-and-returns.html">
+                <Link className="nav-link" to={PATH.ShippingAndReturns}>
                   Quy định giao hàng
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="./faq.html">
+                <Link className="nav-link" to={PATH.Faq}>
                   Câu hỏi
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="./contact-us.html">
+                <Link className="nav-link" to={PATH.Contact}>
                   Liên hệ
-                </a>
+                </Link>
               </li>
             </ul>
             {/* Nav */}
@@ -204,10 +204,10 @@ export default function Header() {
       <nav className="navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
           {/* Brand */}
-          <a className="navbar-brand" href="./index.html">
+          <Link className="navbar-brand" to={PATH.Home}>
             <img style={{ width: 50 }} src="/img/logo.svg" />
             Shopper.
-          </a>
+          </Link>
           {/* Toggler */}
           <button
             className="navbar-toggler"
@@ -235,19 +235,22 @@ export default function Header() {
                 </Link>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link" href="./shop.html">
-                  {t("Laptop")}
-                </a>
+                <Link className="nav-link" to="/dien-thoai-may-tinh-bang/1789">
+                  {t("Phone")}
+                </Link>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link" href="./shop.html">
-                  Máy tính
-                </a>
+                <Link className="nav-link" to="/laptop-thiet-bi-it/1846">
+                  {t("Laptop")}
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="./shop.html">
-                  Sản phẩm khuyến mãi
-                </a>
+                <Link
+                  className="nav-link"
+                  to="/san-pham?page=1&sort=discount_rate.desc"
+                >
+                  {t("Biggest promotion")}
+                </Link>
               </li>
             </ul>
             {/* Nav */}

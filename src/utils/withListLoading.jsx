@@ -4,7 +4,7 @@ export const withListLoading = (Component, LoadingComponent = Component) => {
   return ({ loadingCount = 3, data, loading, empty, ...props }) => {
     return loading
       ? Array.from(Array(loadingCount)).map((_, i) => (
-          <LoadingComponent loading key={i} />
+          <LoadingComponent loading key={i} {...props} />
         ))
       : data.length > 0
       ? data.map((e) => (

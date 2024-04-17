@@ -23,6 +23,7 @@ import { object } from "@/utils/object";
 import { DatePicker, message } from "antd";
 import dayjs from "dayjs";
 import { useRef } from "react";
+import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
 
 const rule = {
@@ -128,6 +129,9 @@ export default function ProfilePage() {
 
   return (
     <div>
+      <Helmet>
+        <title>Trang cá nhân</title>
+      </Helmet>
       <Portal selector={PROFILE_TITLE_ID}>Thông tin cá nhân</Portal>
       <div className="row">
         <div className="col-12">

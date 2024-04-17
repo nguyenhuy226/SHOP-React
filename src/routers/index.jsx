@@ -12,6 +12,10 @@ import ViewCart from "@/pages/gio-hang";
 import Checkout from "@/pages/checkout";
 import OrderComplete from "@/pages/dat-hang-thanh-cong";
 import { ResetPassword } from "@/pages/reset-pssword";
+import { Contact } from "@/pages/contact";
+import { StoreLocator } from "@/pages/store-locator";
+import ShippingAndReturns from "@/pages/shipping-and-returns";
+import { Faq } from "@/pages/faq";
 
 export const routes = [
   {
@@ -37,10 +41,25 @@ export const routes = [
         element: <ProductPage />,
         path: PATH.Product,
       },
-
       {
         element: <ProductPage />,
         path: PATH.Category,
+      },
+      {
+        element: <Contact />,
+        path: PATH.Contact,
+      },
+      {
+        element: <StoreLocator />,
+        path: PATH.StoreLocator,
+      },
+      {
+        element: <ShippingAndReturns />,
+        path: PATH.ShippingAndReturns,
+      },
+      {
+        element: <Faq />,
+        path: PATH.Faq,
       },
       {
         element: <PrivateRouter redirect={PATH.Account} />,

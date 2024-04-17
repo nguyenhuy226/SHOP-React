@@ -9,6 +9,10 @@ export const PATH = {
   Checkout: "/checkout",
   OrderComplete: "/dat-hang-thanh-cong",
   ResetPassword: "/reset-password",
+  Contact: "/lien-he",
+  StoreLocator: "/vi-tri-cua-hang",
+  ShippingAndReturns: "/shipping-and-return",
+  Faq: "/faq",
   Profile: {
     Index: PROFILE,
     Order: PROFILE + "/don-hang",

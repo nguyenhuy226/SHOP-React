@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import Field from "@/components/Field";
 import { ResetPasswordModal } from "@/components/ResetPasswordModal";
 import { useTranslate } from "@/components/TranslateProvider";
+import { AUTH_MESSAGE } from "@/config/message";
 import { useAuth } from "@/hooks/useAuth";
 import { useBodyClass } from "@/hooks/useBodyClass";
 import { useForm } from "@/hooks/useForm";
@@ -18,6 +19,7 @@ import {
 } from "@/utils";
 import { message } from "antd";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
 
 export default function Account() {
@@ -80,7 +82,7 @@ export default function Account() {
           loginAction({
             data: formLogin.values,
             onError: handleError,
-            onSuccess: () => message.success(t("Login Success")),
+            onSuccess: () => message.success(t(AUTH_MESSAGE.LOGIN_SUCCESS)),
           })
         );
       } catch (error) {
@@ -94,6 +96,9 @@ export default function Account() {
   };
   return (
     <>
+      <Helmet>
+        <title>Tài khoản</title>
+      </Helmet>
       <ResetPasswordModal
         open={openResetPassword}
         onClose={() => setOpenResetPassword(false)}
@@ -160,13 +165,7 @@ export default function Account() {
                       </div>
                       <div className="col-12">
                         {/* Button */}
-                        <Button
-                          onClick={onLogin}
-                          loading={loginLoading}
-                          href="./account-personal-info.html"
-                          className="btn btn-sm btn-dark"
-                          type="submit"
-                        >
+                        <Button onClick={onLogin} loading={loginLoading}>
                           Sign In
                         </Button>
                       </div>

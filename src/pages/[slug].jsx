@@ -6,6 +6,7 @@ import Paginate from "@/components/Paginate";
 import { Rating } from "@/components/Rating";
 import { ListReview } from "@/components/ReviewItem";
 import { ShortContent } from "@/components/ShortContent";
+import Skeleton from "@/components/Skeleton";
 import { Tab } from "@/components/Tab";
 import { PATH } from "@/config";
 import { useAction } from "@/hooks/useAction";
@@ -18,8 +19,9 @@ import { productService } from "@/services/product";
 import { reviewService } from "@/services/review";
 import { updateCartItemAction } from "@/stories/cart";
 import { currency, handleError, required } from "@/utils";
-import { message, Image } from "antd";
-import React, { useState } from "react";
+import { Image, message } from "antd";
+import { useState } from "react";
+import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
@@ -27,6 +29,7 @@ export default function ProductDetailPage() {
   const [star, setStar] = useState(5);
   const { slug } = useParams();
   const [, id] = slug.split("-p");
+
   const navigate = useNavigate();
   const [openImageModal, setOpenImageModal] = useState(false);
   const [curentImage, setCurrentImage] = useState(0);
@@ -60,7 +63,6 @@ export default function ProductDetailPage() {
   } = useQuery({
     queryFn: () => reviewService.getReview(id),
   });
-  console.log(reivews);
 
   const category = useCategory(detail?.data?.categories);
   const onAddWishlist = useAction({
@@ -68,7 +70,170 @@ export default function ProductDetailPage() {
     loadingMessage: `Đang thêm sản phẩm ${detail?.data?.name} vào yêu thích`,
     successMessage: `thêm sản phẩm ${detail?.data?.name} vào yêu thích thành công`,
   });
-  if (loading) return null;
+  if (loading)
+    return (
+      <>
+        <nav className="py-5">
+          <div className="container">
+            <div className="row">
+              <div className="col-12">
+                {/* Breadcrumb */}
+                <Skeleton height={22} width={600} />
+              </div>
+            </div>
+          </div>
+        </nav>
+        {/* PRODUCT */}
+        <section>
+          <div className="container">
+            <div className="row">
+              <div className="col-12">
+                <div className="row">
+                  <div className="col-12 col-md-6">
+                    {/* Card */}
+                    <div className="card">
+                      {/* Badge */}
+                      {/* <div className="badge badge-primary card-badge text-uppercase">
+                     
+                      </div> */}
+                      {/* Slider */}
+                      <div className="mb-4">
+                        <Skeleton height={753.19} width={538} />
+                      </div>
+                      <div style={{ display: "none" }}>
+                        {/* <Image.PreviewGroup
+                          preview={{
+                            current: curentImage,
+                            visible: openImageModal,
+                            onVisibleChange: (vis) => setOpenImageModal(vis),
+                            countRender: (current, total) =>
+                              `${product.name} - ${current} / ${total}`,
+                          }}
+                        >
+                          {product.images.map((e, i) => (
+                            <Image key={i} src={e.thumbnail_url} />
+                          ))}
+                        </Image.PreviewGroup> */}
+                      </div>
+                    </div>
+                    {/* Slider */}
+                    <div className="flickity-nav mx-n2 mb-10 mb-md-0 flex">
+                      {/* {product.images.slice(0, 4).map((e, i) => (
+                        <div
+                          className="col-12 px-2 cursor-pointer"
+                          style={{ maxWidth: 113 }}
+                          key={e.thumbnail_url}
+                          onClick={onActiveImageModalCurry(i)}
+                        >
+                          <div
+                            className="embed-responsive embed-responsive-1by1 bg-cover"
+                            style={{
+                              backgroundImage: `url(${e.thumbnail_url})`,
+                            }}
+                          />
+                        </div>
+                      ))}
+                      {product.images.length === 5 && (
+                        <div
+                          className="col-12 px-2 cursor-pointer"
+                          style={{ maxWidth: 113 }}
+                          onClick={onActiveImageModalCurry(5)}
+                        >
+                          <div
+                            className="embed-responsive embed-responsive-1by1 bg-cover"
+                            style={{
+                              backgroundImage: `url(${product.images[5]?.thumbnail_url})`,
+                            }}
+                          />
+                        </div>
+                      )}
+                      {product.images.length > 5 && (
+                        <div
+                          className="col-12 px-2 cursor-pointer"
+                          style={{ maxWidth: 113 }}
+                          onClick={onActiveImageModalCurry(5)}
+                        >
+                          <div
+                            className="embed-responsive embed-responsive-1by1 text-center bg-cover flex items-center justify-center"
+                            style={{
+                              background: "#eee",
+                            }}
+                          >
+                            + {product.images.length - 4} ảnh
+                          </div>
+                        </div>
+                      )} */}
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6 pl-lg-10">
+                    {/* Header */}
+                    <div className="row mb-1">
+                      <div className="col">
+                        {/* Preheading */}
+                        <a className="text-muted" href="shop.html">
+                          <Skeleton height={22} width={199.92} />
+                        </a>
+                      </div>
+                      <div className="col-auto flex items-center">
+                        {/* Rating */}
+                        <Skeleton height={24} width={188.91} />
+                      </div>
+                    </div>
+                    {/* Heading */}
+                    <h3 className="mb-2">
+                      <Skeleton height={115.17} width={570} />
+                    </h3>
+                    {/* Price */}
+                    <div className="mb-7">
+                      <Skeleton height={32} width={260} />
+                    </div>
+                    {/* Form */}
+
+                    <div className="form-row mb-7">
+                      <p className="col-12">
+                        <Skeleton height={72} width={570} />
+                      </p>
+
+                      <div className="col-12 col-lg">
+                        {/* Submit */}
+                        <Skeleton height={50.5} width={332.95} />
+                      </div>
+                      <div className="col-12 col-lg-auto">
+                        {/* Wishlist */}
+                        <Skeleton height={50.5} width={137.05} />
+                      </div>
+                    </div>
+                    <p className="mb-0 flex gap-2">
+                      <span className="mr-4">
+                        <Skeleton height={30.5} width={45.2} />
+                      </span>
+                      <a
+                        className="btn btn-xxs btn-circle btn-light font-size-xxxs text-gray-350"
+                        href="#!"
+                      >
+                        <Skeleton height={30.5} width={30.5} />
+                      </a>
+                      <a
+                        className="btn btn-xxs btn-circle btn-light font-size-xxxs text-gray-350"
+                        href="#!"
+                      >
+                        <Skeleton height={30.5} width={30.5} />
+                      </a>
+                      <a
+                        className="btn btn-xxs btn-circle btn-light font-size-xxxs text-gray-350"
+                        href="#!"
+                      >
+                        <Skeleton height={30.5} width={30.5} />
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </>
+    );
   const { data: product } = detail;
   const { listItems } = cart;
 
@@ -113,6 +278,9 @@ export default function ProductDetailPage() {
   };
   return (
     <>
+      <Helmet>
+        <title>Chi tiết sản phẩm</title>
+      </Helmet>
       <div>
         <nav className="py-5">
           <div className="container">

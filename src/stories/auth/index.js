@@ -29,6 +29,9 @@ export const {
     logout(state) {
       state.user = null;
     },
+    toogleLoading(state, action) {
+      state.loginLoading = action.payload;
+    },
   },
 });
 

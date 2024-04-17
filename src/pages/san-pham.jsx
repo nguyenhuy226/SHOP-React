@@ -14,6 +14,7 @@ import queryString from "query-string";
 import { useState } from "react";
 import { Link, generatePath, useParams } from "react-router-dom";
 import { Slider } from "@/components/Slider";
+import { Helmet } from "react-helmet";
 export default function ProductPage() {
   const { id } = useParams();
 
@@ -53,6 +54,9 @@ export default function ProductPage() {
   // if (loading) return null;
   return (
     <section className="py-11">
+      <Helmet>
+        <title>Sản phẩm</title>
+      </Helmet>
       <div className="container">
         <div className="row">
           <div className="col-12 col-md-4 col-lg-3">
@@ -443,7 +447,6 @@ export default function ProductPage() {
             {/* Slider */}
             <Slider>
               {/* Item */}
-
               <div className="w-100">
                 <div
                   className="card bg-h-100 bg-left"

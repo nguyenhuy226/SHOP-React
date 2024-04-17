@@ -4,6 +4,7 @@ import { useQuery } from "@/hooks/useQuery";
 import { useSearch } from "@/hooks/useSearch";
 import { orderService } from "@/services/order";
 import { Badge } from "antd";
+import { Helmet } from "react-helmet";
 
 export default function Order() {
   const [, setSearch] = useSearch();
@@ -20,8 +21,11 @@ export default function Order() {
     <Tab
       defaultAcitve="all"
       removeOnDeActive
-      onChange={() => setSearch({ page: 1 })}
+      onSearchChange={(search) => search.delete("page")}
     >
+      <Helmet>
+        <title>Đơn hàng</title>
+      </Helmet>
       <div className="nav mb-10">
         <Tab.Title value="all">Tất cả đơn</Tab.Title>
         <Badge count={pendingCount?.count}>

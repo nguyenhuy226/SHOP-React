@@ -6,6 +6,7 @@ import { useQuery } from "@/hooks/useQuery";
 import { useSearch } from "@/hooks/useSearch";
 import { productService } from "@/services/product";
 import queryString from "query-string";
+import { Helmet } from "react-helmet";
 
 export default function WishlistPage() {
   const [search] = useSearch({
@@ -29,6 +30,9 @@ export default function WishlistPage() {
 
   return (
     <>
+      <Helmet>
+        <title>Sản phẩm yêu thích</title>
+      </Helmet>
       <div>
         <Portal selector={PROFILE_TITLE_ID}>Sản phẩm yêu thích</Portal>
         <div className="row">

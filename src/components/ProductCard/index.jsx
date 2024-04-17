@@ -5,7 +5,7 @@ import { useCart } from "@/hooks/useCart";
 import { useCategory } from "@/hooks/useCategories";
 import { productService } from "@/services/product";
 import { updateCartItemAction } from "@/stories/cart";
-import { currency } from "@/utils";
+import { cn, currency } from "@/utils";
 import { withListLoading } from "@/utils/withListLoading";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -26,6 +26,7 @@ export default function ProductCard({
   showWishlist,
   showRemove,
   onRemoveWishlistSuccess,
+  className,
 }) {
   const img1 = images?.[0].thumbnail_url;
   const img2 = images?.[1] ? images?.[1]?.thumbnail_url : img1;
@@ -104,7 +105,7 @@ export default function ProductCard({
     }
   };
   return (
-    <div className="col-6 col-md-4">
+    <div className={cn("col-6 col-md-4", className)}>
       {/* Card */}
       <div className="product-card card mb-7">
         {/* Badge */}
@@ -213,9 +214,9 @@ export default function ProductCard({
   );
 }
 
-export const ProductCardLoading = () => {
+export const ProductCardLoading = ({ className }) => {
   return (
-    <div className="col-6 col-md-4">
+    <div className={cn("col-6 col-md-4", className)}>
       {/* Card */}
       <div className="product-card card mb-7">
         {/* Badge */}

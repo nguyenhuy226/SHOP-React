@@ -2,6 +2,9 @@
     "Home": "Trang chủ",
     "Product": "Sản phẩm",
     "Laptop": "Máy tính xách tay",
-    "Login Success": "Đăng nhập thành công",
-    "Username or Password incorrect!": "Tài khoản hoặc mật khẩu không đúng"
+    "Login Success": "Đăng nhập tài khoản thành công",
+    "Logout Success": "Đăng xuất tài khoản thành công",
+    "Username or Password incorrect!": "Tài khoản hoặc mật khẩu không đúng",
+    "Biggest promotion": "Khuyến mãi nhiều nhất",
+    "Phone":"Điện thoại"
   }
