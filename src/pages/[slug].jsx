@@ -352,7 +352,7 @@ export default function ProductDetailPage() {
                           />
                         </div>
                       ))}
-                      {product.images.length === 5 && (
+                      {product?.images?.length === 5 && (
                         <div
                           className="col-12 px-2 cursor-pointer"
                           style={{ maxWidth: 113 }}
@@ -366,7 +366,7 @@ export default function ProductDetailPage() {
                           />
                         </div>
                       )}
-                      {product.images.length > 5 && (
+                      {product?.images?.length > 5 && (
                         <div
                           className="col-12 px-2 cursor-pointer"
                           style={{ maxWidth: 113 }}
@@ -378,7 +378,7 @@ export default function ProductDetailPage() {
                               background: "#eee",
                             }}
                           >
-                            + {product.images.length - 4} ảnh
+                            + {product?.images?.length - 4} ảnh
                           </div>
                         </div>
                       )}
