@@ -70,6 +70,9 @@ export default function ProductDetailPage() {
     loadingMessage: `Đang thêm sản phẩm ${detail?.data?.name} vào yêu thích`,
     successMessage: `thêm sản phẩm ${detail?.data?.name} vào yêu thích thành công`,
   });
+
+  const listItems = cart?.listItems;
+
   if (loading)
     return (
       <>
@@ -235,8 +238,6 @@ export default function ProductDetailPage() {
       </>
     );
   const { data: product } = detail;
-  const { listItems } = cart;
-
   const onActiveImageModalCurry = (i) => () => {
     setCurrentImage(i);
     setOpenImageModal(true);
