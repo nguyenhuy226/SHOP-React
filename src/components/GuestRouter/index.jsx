@@ -1,7 +1,5 @@
-import React from "react";
-import { Outlet, Navigate, useLocation } from "react-router-dom";
-import { store } from "@/stories";
 import { useAuth } from "@/hooks/useAuth";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 export default function GuestRouter({ redirect = "/" }) {
   // const user = store.user;

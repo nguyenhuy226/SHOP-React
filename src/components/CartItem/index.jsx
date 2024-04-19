@@ -1,15 +1,15 @@
+import { useCart } from "@/hooks/useCart";
 import {
   removeCartItemAction,
   toggleCheckoutItemAction,
   updateCartItemAction,
 } from "@/stories/cart";
 import { cn, currency } from "@/utils";
-import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Popconfirm } from "../Popcomfirm";
-import { useCart } from "@/hooks/useCart";
 import { Spin } from "antd";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Checkbox } from "../Checkout";
+import { Popconfirm } from "../Popcomfirm";
 
 export const CartItem = ({
   footer,

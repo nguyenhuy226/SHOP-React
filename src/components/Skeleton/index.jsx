@@ -1,6 +1,5 @@
-import React from "react";
-import { SkeletonStyle } from "./style";
 import { cn } from "@/utils";
+import { SkeletonStyle } from "./style";
 
 export default function Skeleton({ children, width, height, shape, ...props }) {
   return (

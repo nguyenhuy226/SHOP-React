@@ -1,7 +1,6 @@
 import ListProduct from "@/components/ListProduct";
 import { Slider } from "@/components/Slider";
 import { Tab } from "@/components/Tab";
-import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 

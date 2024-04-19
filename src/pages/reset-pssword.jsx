@@ -9,7 +9,7 @@ import { getUserAction } from "@/stories/auth";
 import { getCartAction } from "@/stories/cart";
 import { confirm, handleError, required, setToken } from "@/utils";
 import { message } from "antd";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 

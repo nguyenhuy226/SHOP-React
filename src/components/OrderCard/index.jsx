@@ -1,11 +1,10 @@
-import { currency } from "@/utils";
-import moment from "moment";
-import { Button } from "../Button";
-import { generatePath, Link } from "react-router-dom";
 import { PATH } from "@/config";
-import Skeleton from "../Skeleton";
 import { withListLoading } from "@/utils/withListLoading";
+import moment from "moment";
+import { generatePath, Link } from "react-router-dom";
+import { Button } from "../Button";
 import { OrderStatus } from "../OrderStatus";
+import Skeleton from "../Skeleton";
 
 const Loading = () => {
   return (

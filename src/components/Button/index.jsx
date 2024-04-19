@@ -1,6 +1,5 @@
-import React from "react";
-import { LoadingOutlined } from "@ant-design/icons";
 import { cn } from "@/utils";
+import { LoadingOutlined } from "@ant-design/icons";
 export const Button = ({ outline, primary, children, loading, ...props }) => {
   return (
     <button

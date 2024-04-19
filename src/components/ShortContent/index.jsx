@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { ShortedContentStyle } from "./style";
-import { cn } from "@/utils";
+import { useState } from "react";
 import { Button } from "../Button";
+import { ShortedContentStyle } from "./style";
 
 export const ShortContent = ({ children, className, ...props }) => {
   const [isShorted, setIsShorted] = useState(true);

@@ -1,6 +1,6 @@
 import { useDidUpdateEffect } from "@/hooks/useDidUpdateEffect";
 import { cn } from "@/utils";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const Context = createContext({});
 

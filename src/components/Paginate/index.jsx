@@ -1,6 +1,5 @@
 import { cn } from "@/utils";
-import React from "react";
-import { Link, useSearchParams, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 
 export default function Paginate({ totalPage, name = "page" }) {
   const [search, setSearch] = useSearchParams();

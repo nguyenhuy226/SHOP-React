@@ -1,6 +1,5 @@
-import React from "react";
-import { SelectStyle } from "./style";
 import { cn } from "@/utils";
+import { SelectStyle } from "./style";
 
 export default function Select({ error, children, ...props }) {
   return (

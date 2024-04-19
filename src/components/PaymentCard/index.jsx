@@ -1,15 +1,12 @@
-import { withListLoading } from "@/utils/withListLoading";
-import React from "react";
-import Skeleton from "../Skeleton";
-import { Link, generatePath } from "react-router-dom";
 import { PATH } from "@/config";
-import moment from "moment";
-import { PaymentCardStyle } from "./style";
-import { Button } from "../Button";
-import { handleError } from "@/utils";
-import { userService } from "@/services/user";
-import { message } from "antd";
 import { useAction } from "@/hooks/useAction";
+import { userService } from "@/services/user";
+import { withListLoading } from "@/utils/withListLoading";
+import moment from "moment";
+import { Link, generatePath } from "react-router-dom";
+import { Button } from "../Button";
+import Skeleton from "../Skeleton";
+import { PaymentCardStyle } from "./style";
 
 export default function PaymentCard({
   type,

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export const UploadFile = ({ children, onChange }) => {
   const [imageReview, setImageReview] = useState();

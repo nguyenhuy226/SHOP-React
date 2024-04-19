@@ -1,7 +1,6 @@
-import moment from "moment";
-import React from "react";
-import Skeleton from "../Skeleton";
 import { withListLoading } from "@/utils/withListLoading";
+import moment from "moment";
+import Skeleton from "../Skeleton";
 
 const Loading = () => {
   return (

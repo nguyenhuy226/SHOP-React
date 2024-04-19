@@ -1,13 +1,11 @@
+import { PATH } from "@/config";
 import { useForm } from "@/hooks/useForm";
-import { handleError, regexp, required } from "@/utils";
-import { message, Modal } from "antd";
-import React from "react";
-import Field from "../Field";
-import { Button } from "../Button";
 import { useQuery } from "@/hooks/useQuery";
 import { userService } from "@/services/user";
-import { redirect } from "react-router-dom";
-import { PATH } from "@/config";
+import { handleError, regexp, required } from "@/utils";
+import { message, Modal } from "antd";
+import { Button } from "../Button";
+import Field from "../Field";
 
 export const ResetPasswordModal = ({ open, onClose }) => {
   const { loading, reFetch: resetPasswordService } = useQuery({

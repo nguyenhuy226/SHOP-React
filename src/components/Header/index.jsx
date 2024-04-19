@@ -1,17 +1,16 @@
 import { PATH } from "@/config";
 import { avatarDefault } from "@/config/assets";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 import { logoutAction } from "@/stories/auth";
+import { cartActions } from "@/stories/cart";
+import { CheckCircleFilled } from "@ant-design/icons";
 import { Dropdown, Popover } from "antd";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import SearchDrawer from "../SearchDrawer";
-import { useCart } from "@/hooks/useCart";
 import { CartDrawer } from "../CartDrawer";
-import { CheckCircleFilled } from "@ant-design/icons";
-import { Button } from "../Button";
-import { cartActions } from "@/stories/cart";
+import SearchDrawer from "../SearchDrawer";
 import { useTranslate } from "../TranslateProvider";
 
 const LANG = {

@@ -1,5 +1,5 @@
 import { PATH } from "@/config";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { generatePath, Link, useLocation, useNavigate } from "react-router-dom";
 

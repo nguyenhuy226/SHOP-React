@@ -66,7 +66,7 @@ export default function ViewCart() {
       </Helmet>
       <div>
         <section className="pt-7 pb-12">
-          {cart?.listItems.length > 0 ? (
+          {cart?.listItems?.length > 0 ? (
             <div className="container">
               <div className="row">
                 <div className="col-12">

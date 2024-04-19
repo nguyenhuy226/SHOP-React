@@ -1,11 +1,10 @@
+import { PATH } from "@/config";
 import { useQuery } from "@/hooks/useQuery";
 import { userService } from "@/services/user";
-import { Drawer } from "antd";
-import React from "react";
-import { ListAddressCard, WithAddressLoading } from "../AddressCard";
 import { cn } from "@/utils";
+import { Drawer } from "antd";
 import { Link } from "react-router-dom";
-import { PATH } from "@/config";
+import { WithAddressLoading } from "../AddressCard";
 
 export const AddressDrawer = ({ onSelect, selected, open, onClose }) => {
   const { data, loading } = useQuery({
